@@ -1,0 +1,16 @@
+<main class="auth-page">
+	<section class="auth-brand" aria-label="Phytofix">
+		<div class="auth-brand-top"><span class="brand-mark">P</span> phytofix</div>
+		<div class="brand-copy"><p class="eyebrow">Welcome back</p><h1>Keep your plants close.</h1><p>Return to a care routine that makes every small signal easier to notice.</p></div>
+		<p class="brand-note">Natural care. Thoughtfully tracked.</p>
+	</section>
+	<section class="auth-panel"><div class="auth-card"><p class="eyebrow">Your account</p><h2>Sign in</h2><p class="muted">Pick up where your plants left off.</p>
+		@if (error) { <p class="form-error" role="alert">{{ error }}</p> }
+		<form (ngSubmit)="submit()" #signinForm="ngForm">
+			<label for="email">Email address</label><input id="email" name="email" type="email" [(ngModel)]="email" autocomplete="email" required placeholder="you@example.com" />
+			<label for="password">Password</label><input id="password" name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required placeholder="Your password" />
+			<button class="primary-button" type="submit" [disabled]="signinForm.invalid">Sign in <span aria-hidden="true">↗</span></button>
+		</form>
+		<p class="switch-prompt">New to Phytofix? <a routerLink="/signup">Create an account</a></p>
+	</div></section>
+</main>
