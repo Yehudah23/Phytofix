@@ -13,9 +13,9 @@ h1 { color: var(--forest); font: 500 clamp(4.2rem, 8vw, 8.6rem)/.88 var(--displa
 .text-link { color: var(--forest); }
 .text-link:hover { color: var(--forest-deep); }
 .text-link span { color: var(--gold-deep); font-size: 1.1rem; margin-left: 8px; }
-.hero-art { background: var(--sage); height: min(540px, 58vw); min-height: 420px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+.hero-art { height: min(540px, 58vw); min-height: 420px; overflow: hidden; position: relative; }
 .hero-art::before { border: 1px solid rgba(23, 61, 45, .14); border-radius: 50%; content: ''; height: 68%; left: 16%; position: absolute; top: 11%; width: 68%; }
-.hero-image { max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(23, 61, 45, .18)); }
+.hero-image { height: 100%; left: 0; object-fit: cover; position: absolute; top: 0; width: 100%; filter: drop-shadow(0 20px 40px rgba(23, 61, 45, .18)); }
 .sun-disc { background: var(--gold); border-radius: 50%; height: 155px; opacity: .8; position: absolute; right: 13%; top: 10%; width: 155px; }
 .pot { background: var(--forest); bottom: -3%; height: 155px; left: 32%; position: absolute; transform: perspective(200px) rotateX(-3deg); width: 37%; }
 .pot::before { background: var(--forest-soft); content: ''; height: 22px; left: -6%; position: absolute; top: -10px; width: 112%; }
