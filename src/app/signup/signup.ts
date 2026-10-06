@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   selector: 'app-signup',
   styleUrl: '../auth.css',
   templateUrl: './signup.html',

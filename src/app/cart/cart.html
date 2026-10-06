@@ -1,0 +1,46 @@
+<main class="cart-page">
+	<section class="cart-heading">
+		<p class="eyebrow">Your cart</p>
+		<h1>Your selected care.</h1>
+	</section>
+
+	@if (cart.count() === 0) {
+		<section class="cart-empty">
+			<span class="empty-mark">✦</span>
+			<h2>Your cart is empty.</h2>
+			<p>Browse the collection and add the treatments your routine needs.</p>
+			<a class="primary-link" routerLink="/products">Explore treatments <span aria-hidden="true">↗</span></a>
+		</section>
+	} @else {
+		<div class="cart-layout">
+			<section class="cart-items" aria-label="Cart items">
+				@for (item of cart.itemsList(); track item.productId) {
+					<article class="cart-row">
+						<div class="cart-image"><img [src]="item.image" [alt]="item.name" /></div>
+						<div class="cart-info">
+							<p class="cart-category">{{ item.category }}</p>
+							<h2>{{ item.name }}</h2>
+							<p class="cart-price">{{ formatPrice(item.price) }}</p>
+						</div>
+						<div class="cart-quantity">
+							<button type="button" (click)="decrease(item.productId, item.quantity)" aria-label="Decrease quantity">−</button>
+							<span>{{ item.quantity }}</span>
+							<button type="button" (click)="increase(item.productId, item.quantity)" aria-label="Increase quantity">+</button>
+						</div>
+						<p class="cart-total">{{ formatPrice(item.price * item.quantity) }}</p>
+						<button class="cart-remove" type="button" (click)="remove(item.productId)" aria-label="Remove {{ item.name }}">✕</button>
+					</article>
+				}
+			</section>
+
+			<aside class="cart-summary">
+				<p class="eyebrow">Order summary</p>
+				<div class="summary-line"><span>Items ({{ cart.count() }})</span><strong>{{ formatPrice(cart.subtotal()) }}</strong></div>
+				<div class="summary-line"><span>Delivery</span><strong>Calculated at checkout</strong></div>
+				<div class="summary-line summary-total"><span>Subtotal</span><strong>{{ formatPrice(cart.subtotal()) }}</strong></div>
+				<a class="primary-link" routerLink="/checkout">Proceed to checkout <span aria-hidden="true">↗</span></a>
+				<p class="summary-note">Sign in required · Paystack checkout coming soon</p>
+			</aside>
+		</div>
+	}
+</main>

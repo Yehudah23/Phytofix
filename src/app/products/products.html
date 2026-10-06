@@ -5,11 +5,38 @@
 	</section>
 
 	<section class="product-grid" aria-label="Phytofix products">
-		<article class="product-card product-card-featured"><div class="product-image"><span>01</span><img src="/product%201.PNG" alt="Glucofix Herbal Capsule green bottle" /></div><div class="product-meta"><p class="product-type">Botanical supplement · Capsules</p><h2>Glucofix Herbal Capsule</h2><p>A research-based botanical formulation made for everyday wellness support.</p><a routerLink="/signup">Add to your routine <span aria-hidden="true">↗</span></a></div></article>
-		<article class="product-card"><div class="product-image"><span>02</span><img src="/product%202.PNG" alt="Glucofix Herbal Capsule blue bottle" /></div><div class="product-meta"><p class="product-type">Botanical supplement · Capsules</p><h2>Glucofix Herbal Capsule</h2><p>Plant-based support developed with quality, consistency, and care in mind.</p><a routerLink="/signup">Discover Glucofix <span aria-hidden="true">↗</span></a></div></article>
-		<article class="product-card"><div class="product-image"><span>03</span><img src="/product%203.PNG" alt="PhytoGold Tea botanical wellness tea" /></div><div class="product-meta"><p class="product-type">Botanical infusion · 60 g</p><h2>PhytoGold Tea</h2><p>A scientifically formulated herbal infusion for overall vitality and wellness.</p><a routerLink="/signup">Discover PhytoGold <span aria-hidden="true">↗</span></a></div></article>
+		@for (product of products; track product.id) {
+			<article class="product-card" [class.product-card-featured]="product.featured">
+				<div class="product-image">
+					<span>{{ $index + 1 | number:'0.2-2' }}</span>
+					<img [src]="product.image" [alt]="product.alt" />
+				</div>
+				<div class="product-meta">
+					<p class="product-type">{{ product.type }}</p>
+					<h2>{{ product.name }}</h2>
+					<p>{{ product.description }}</p>
+					<div class="product-buy">
+						<div class="qty-stepper">
+							<button type="button" (click)="changeQuantity(product, -1)" aria-label="Decrease quantity">−</button>
+							<span>{{ quantityOf(product) }}</span>
+							<button type="button" (click)="changeQuantity(product, 1)" aria-label="Increase quantity">+</button>
+						</div>
+						<button class="add-button" type="button" (click)="addToCart(product)">
+							@if (addedId === product.id) {
+								Added to cart ✓
+							} @else {
+								Add to cart <span aria-hidden="true">↗</span>
+							}
+						</button>
+					</div>
+				</div>
+			</article>
+		}
 	</section>
 
-	<section class="routine-band"><span class="routine-mark">✦</span><div><p class="eyebrow">A considered routine</p><h2>Less guesswork.<br />More growing.</h2></div><p>Every Phytofix product is made to be easy to understand, easy to use, and kind to the living systems it supports.</p></section>
+	<section class="routine-band">
+		<span class="routine-mark">✦</span>
+		<div><p class="eyebrow">A considered routine</p><h2>Less guesswork.<br />More growing.</h2></div>
+		<p>Every Phytofix product is made to be easy to understand, easy to use, and kind to the living systems it supports.</p>
+	</section>
 </main>
-

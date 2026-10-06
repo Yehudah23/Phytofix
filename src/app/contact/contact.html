@@ -1,1 +1,103 @@
-<p>contact works!</p>
+<main class="contact-page">
+  <section class="contact-hero">
+    <div class="contact-hero-content">
+      <p class="eyebrow">Get in touch</p>
+      <h1>We'd love to hear from you.</h1>
+      <p class="intro-copy">Questions about your routine, an order, or just want to say hello? Drop us a line.</p>
+    </div>
+  </section>
+
+  <section class="contact-grid">
+    <div class="contact-form-card">
+      <h2>Send a message</h2>
+      @if (submitted) {
+        <div class="success-message">
+          <p class="success-icon">✓</p>
+          <h3>Message sent!</h3>
+          <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
+          <button class="secondary-button" (click)="submitted = false">Send another</button>
+        </div>
+      } @else {
+        @if (error) { <p class="form-error" role="alert">{{ error }}</p> }
+        <form (ngSubmit)="submit()" #contactForm="ngForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Your name</label>
+              <input id="name" name="name" type="text" [(ngModel)]="name" autocomplete="name" required placeholder="Your name" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" [(ngModel)]="email" autocomplete="email" required placeholder="you@example.com" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject" [(ngModel)]="subject" required>
+              <option value="">Select a topic</option>
+              <option value="routine">My routine</option>
+              <option value="order">Order & delivery</option>
+              <option value="product">Product question</option>
+              <option value="account">Account help</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" [(ngModel)]="message" rows="6" required placeholder="Tell us what's on your mind..."></textarea>
+          </div>
+          <button class="primary-button" type="submit" [disabled]="contactForm.invalid">Send message <span aria-hidden="true">→</span></button>
+        </form>
+      }
+    </div>
+
+    <div class="contact-info-card">
+      <h2>Other ways to reach us</h2>
+      <div class="contact-methods">
+        <div class="contact-method">
+
+          <div>
+            <h3>Email</h3>
+            <a href="mailto:info.phytofix@gmail.com">info.phytofix@gmail.com</a>
+            <p class="method-note">We reply within 24 hours</p>
+          </div>
+        </div>
+        <div class="contact-method">
+
+          <div>
+            <h3>Phone</h3>
+            <a href="tel:+2348000000000">+234 800 000 0000</a>
+            <p class="method-note">Mon–Fri, 9am–5pm WAT</p>
+          </div>
+        </div>
+        <div class="contact-method">
+          
+          <div>
+            <h3>Office</h3>
+            <address>KM 5 Akure-ilesa express road,<br>Ilara-Mokin,Ondo State<br>Nigeria</address>
+            <p class="method-note">By appointment only</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-section">
+        <h3>Quick answers</h3>
+        <details class="faq-item">
+          <summary>How do I track my order?</summary>
+          <p>Sign in and visit your <a routerLink="/dashboard">dashboard</a> to see real-time delivery progress.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Can I change my routine?</summary>
+          <p>Routines are prescribed by the company. Contact them directly or reply to the routine notification email.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What payment methods do you accept?</summary>
+          <p>We accept bank transfer, USSD, and card payments at checkout.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Do you ship outside Akure?</summary>
+          <p>Yes, we deliver nationwide within Nigeria. Delivery times vary by location.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>

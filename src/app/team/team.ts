@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TeamService, TeamMember } from '../team.service';
 
 @Component({
-  imports: [],
+  imports: [CommonModule],
   selector: 'app-team',
   styleUrl: './team.css',
   templateUrl: './team.html',
 })
-export class Team {}
+export class Team {
+  protected readonly team = inject(TeamService);
+}

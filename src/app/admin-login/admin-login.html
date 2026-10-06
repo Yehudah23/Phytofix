@@ -1,0 +1,29 @@
+<main class="auth-page">
+  <section class="auth-brand" aria-label="Phytofix Admin">
+    <div class="auth-brand-top"><span class="brand-mark">P</span> phytofix</div>
+    <div class="brand-copy">
+      <p class="eyebrow">Admin access</p>
+      <h1>Run the operation.</h1>
+      <p>Sign in to manage orders, routines, and the catalogue.</p>
+    </div>
+    <p class="brand-note">Admin dashboard. Authorized only.</p>
+  </section>
+  <section class="auth-panel">
+    <div class="auth-card">
+      <p class="eyebrow">Administration</p>
+      <h2>Admin sign in</h2>
+      <p class="muted">Enter admin credentials to access the dashboard.</p>
+      @if (error) {
+        <p class="form-error" role="alert">{{ error }}</p>
+      }
+      <form (ngSubmit)="submit()" #adminForm="ngForm">
+        <label for="email">Admin email</label>
+        <input id="email" name="email" type="email" [(ngModel)]="email" autocomplete="email" required placeholder="admin@phytofix.ng" />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required placeholder="Your password" />
+        <button class="primary-button" type="submit" [disabled]="adminForm.invalid">Sign in <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="switch-prompt">Not an admin? <a routerLink="/signin">Customer sign in</a></p>
+    </div>
+  </section>
+</main>

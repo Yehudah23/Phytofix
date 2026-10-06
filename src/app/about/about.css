@@ -8,7 +8,31 @@
 .about-intro p { color: var(--muted); font-size: .96rem; line-height: 1.75; margin: 0 0 20px; max-width: 360px; }
 .about-intro p:last-child { margin-bottom: 0; }
 .about-statement { align-items: start; background: var(--sage); display: grid; gap: 38px; grid-template-columns: 50px 1fr 1fr; margin-top: 105px; padding: 58px 6vw; }
-.statement-mark { color: var(--gold-deep); font-size: 1.7rem; }.about-statement .eyebrow { margin-bottom: 15px; }.about-statement h2 { color: var(--forest); font: 500 clamp(2rem, 4vw, 4rem)/1 var(--display); margin: 0; }.about-statement > div + p { color: var(--muted); font-size: .87rem; line-height: 1.7; margin: 8px 0 0; max-width: 290px; }
-.about-pillars { display: grid; gap: 24px; grid-template-columns: repeat(2, 1fr); margin-top: 90px; }.about-pillars article { border-top: 1px solid var(--line); padding: 23px 5vw 0 0; }.about-pillars span { color: var(--gold-deep); font-size: .66rem; font-weight: 700; letter-spacing: .14em; }.about-pillars h2 { color: var(--forest); font: 500 2.35rem var(--display); margin: 28px 0 13px; }.about-pillars p { color: var(--muted); font-size: .87rem; line-height: 1.75; margin: 0; max-width: 430px; }
-.about-impact { background: var(--forest); color: white; display: grid; gap: 7vw; grid-template-columns: 1.1fr .75fr auto; margin-top: 95px; padding: 49px 6vw; }.about-impact .eyebrow { color: var(--gold); }.about-impact h2 { font: 500 clamp(2rem, 4vw, 3.7rem)/.98 var(--display); margin: 0; }.about-impact > p { color: #b9cbbd; font-size: .84rem; line-height: 1.75; margin: 5px 0 0; max-width: 290px; }.about-impact a { align-self: end; color: white; font-size: .74rem; font-weight: 700; text-decoration: none; white-space: nowrap; }.about-impact a span { color: var(--gold); font-size: 1rem; margin-left: 7px; }
-@media (max-width: 760px) { .about-page { padding-top: 58px; }.about-hero { display: block; min-height: 0; }.about-intro { margin-top: 48px; }.about-statement { grid-template-columns: 35px 1fr; }.about-statement > div + p { grid-column: 2; }.about-pillars { grid-template-columns: 1fr; margin-top: 65px; }.about-pillars article { padding-right: 0; }.about-impact { grid-template-columns: 1fr; gap: 24px; margin-top: 65px; }.about-impact a { align-self: start; } }
+.statement-mark { color: var(--gold-deep); font-size: 1.7rem; }
+.about-statement .eyebrow { margin-bottom: 15px; }
+.about-statement h2 { color: var(--forest); font: 500 clamp(2rem, 4vw, 4rem)/1 var(--display); margin: 0; }
+.about-statement > div + p { color: var(--muted); font-size: .87rem; line-height: 1.7; margin: 8px 0 0; max-width: 290px; }
+.about-pillars { display: grid; gap: 24px; grid-template-columns: repeat(2, 1fr); margin-top: 90px; }
+.about-pillars article { border-top: 1px solid var(--line); padding: 23px 5vw 0 0; }
+.about-pillars span { color: var(--gold-deep); font-size: .66rem; font-weight: 700; letter-spacing: .14em; }
+.about-pillars h2 { color: var(--forest); font: 500 2.35rem var(--display); margin: 28px 0 13px; }
+.about-pillars p { color: var(--muted); font-size: .87rem; line-height: 1.75; margin: 0; max-width: 430px; }
+.about-impact { align-items: center; background: var(--forest); color: white; display: grid; gap: 7vw; grid-template-columns: 1.1fr .75fr auto; margin-top: 95px; padding: 49px 6vw; }
+.about-impact .eyebrow { color: var(--gold); }
+.about-impact h2 { font: 500 clamp(2rem, 4vw, 3.7rem)/.98 var(--display); margin: 0; }
+.about-impact > p { color: #b9cbbd; font-size: .84rem; line-height: 1.75; margin: 5px 0 0; max-width: 290px; }
+.about-impact a { align-self: center; color: white; font-size: .74rem; font-weight: 700; text-decoration: none; white-space: nowrap; transition: color .2s ease; }
+.about-impact a:hover { color: var(--gold); }
+.about-impact a span { color: var(--gold); font-size: 1rem; margin-left: 7px; }
+
+@media (max-width: 760px) {
+	.about-page { padding-top: 58px; }
+	.about-hero { display: block; min-height: 0; }
+	.about-intro { margin-top: 48px; }
+	.about-statement { grid-template-columns: 35px 1fr; }
+	.about-statement > div + p { grid-column: 2; }
+	.about-pillars { grid-template-columns: 1fr; margin-top: 65px; }
+	.about-pillars article { padding-right: 0; }
+	.about-impact { grid-template-columns: 1fr; gap: 24px; margin-top: 65px; }
+	.about-impact a { align-self: start; }
+}

@@ -8,11 +8,16 @@
 		<a routerLink="/products" routerLinkActive="active">Products</a>
 		<a routerLink="/about" routerLinkActive="active">About us</a>
 		<a routerLink="/team" routerLinkActive="active">The team</a>
+		<a routerLink="/contact" routerLinkActive="active">Contact</a>
 	</nav>
 
 	<div class="site-actions">
 		@if (auth.currentUser()) {
 			<a class="nav-dashboard" routerLink="/dashboard">Dashboard</a>
+			<a class="nav-cart" routerLink="/cart">Cart@if (cart.count() > 0) {<span class="cart-badge">{{ cart.count() }}</span>}</a>
+			@if (admin.isAdmin()) {
+				<a class="nav-admin" routerLink="/admin">Admin</a>
+			}
 			<button class="nav-signout" type="button" (click)="signOut()">Sign out</button>
 		} @else {
 			<a class="nav-signin" routerLink="/signin">Sign in</a>

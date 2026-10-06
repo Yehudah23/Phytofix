@@ -5,27 +5,108 @@
       <h1>Keep growing well.</h1>
       <p class="intro-copy">A quiet place to follow what your plants need next.</p>
     </div>
-    <button class="add-button" type="button"><span aria-hidden="true">+</span> Track a product</button>
+  </section>
+
+  <section class="user-profile">
+    <div class="profile-card">
+    
+      <div class="profile-info">
+        <h2>{{ auth.currentUser()?.name }}</h2>
+        <p class="profile-email">{{ auth.currentUser()?.email }}</p>
+      </div>
+      <button class="sign-out-btn" (click)="signOut()">Sign out</button>
+    </div>
   </section>
 
   <section class="summary-grid" aria-label="Care summary">
-    <div class="summary-item"><span class="summary-icon leaf-icon">✦</span><div><strong>3</strong><span>Active products</span></div></div>
-    <div class="summary-item"><span class="summary-icon sun-icon">◒</span><div><strong>12</strong><span>Care days logged</span></div></div>
-    <div class="summary-item"><span class="summary-icon check-icon">✓</span><div><strong>1</strong><span>Milestone this week</span></div></div>
+    <div class="summary-item"><span class="summary-icon leaf-icon">✦</span><div><strong>{{ prescribedRoutines().length }}</strong><span>Prescribed routines</span></div></div>
+    <div class="summary-item"><span class="summary-icon sun-icon">◒</span><div><strong>{{ totalPrescribedDays() }}</strong><span>Care days logged</span></div></div>
+    <div class="summary-item"><span class="summary-icon check-icon">✓</span><div><strong>{{ orders.myViews().length }}</strong><span>Orders placed</span></div></div>
   </section>
 
-  <section class="products-section">
-    <div class="section-heading"><div><p class="eyebrow">Your products</p><h2>Currently tracking</h2></div><button class="view-all" type="button">View history <span aria-hidden="true">→</span></button></div>
-    <div class="product-list">
-      @for (product of products; track product.name) {
-        <article class="product-row">
-          <div class="product-visual" [class]="product.accent"><span aria-hidden="true">✳</span></div>
-          <div class="product-info"><p class="product-category">{{ product.category }}</p><h3>{{ product.name }}</h3><p class="product-detail">{{ product.detail }}</p></div>
-          <div class="progress-wrap"><div class="progress-label"><span>{{ product.status }}</span><strong>{{ product.progress }}%</strong></div><div class="progress-track"><span [style.width.%]="product.progress"></span></div></div>
-          <button class="more-button" type="button" aria-label="More options">•••</button>
+  <section class="orders-section">
+    <div class="section-heading"><div><p class="eyebrow">Your orders</p><h2>Delivery progress</h2></div></div>
+    @if (orders.myViews().length) {
+      <div class="order-list">
+        @for (order of orders.myViews(); track order.id) {
+          <article class="order-row">
+            <div class="order-head">
+              <strong class="order-id">{{ order.id }}</strong>
+              <span class="order-date">Placed {{ order.placedAt | date:'mediumDate' }}</span>
+            </div>
+            <div class="order-body">
+              <p class="order-items">{{ itemCount(order) }} items · {{ formatPrice(order.total) }}</p>
+              <p class="order-eta">Expected by {{ order.eta | date:'mediumDate' }}</p>
+            </div>
+            <div class="order-progress">
+              <div class="progress-label"><span class="status" [class]="'status-' + order.status">{{ order.status }}</span><strong>{{ order.progress }}%</strong></div>
+              <div class="progress-track"><span [style.width.%]="order.progress"></span></div>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <p class="empty-state">No orders yet. <a routerLink="/products">Browse the collection</a> to start a routine.</p>
+    }
+  </section>
+
+  <section class="routine-section">
+    <div class="section-heading"><div><p class="eyebrow">Your routine</p><h2>Prescribed by the company</h2></div></div>
+    <div class="routine-grid">
+      @for (routine of prescribedRoutines(); track routine.id) {
+        <article class="routine-card">
+          <div class="routine-header">
+            <div>
+              <p class="routine-prescriber">Sent by {{ routine.createdBy || 'Admin' }}</p>
+              <h3>{{ routine.name }}</h3>
+              <p class="routine-desc">{{ routine.description }}</p>
+            </div>
+          </div>
+          <div class="routine-progress">
+            <div class="progress-label">
+              <span>Day {{ routine.currentDay }} of {{ routine.totalDays }}</span>
+              <strong>{{ getProgress(routine) }}%</strong>
+            </div>
+            <div class="progress-track"><span [style.width.%]="getProgress(routine)"></span></div>
+          </div>
+          <div class="routine-current-step">
+            @if (getCurrentStep(routine); as step) {
+              <p class="step-title">{{ step.title }}</p>
+              <p class="step-desc">{{ step.description }}</p>
+              @if (step.instructions) {
+                <p class="step-instructions">{{ step.instructions }}</p>
+              }
+              @if (step.tips) {
+                <p class="step-tips">{{ step.tips }}</p>
+              }
+            } @else {
+              <p class="no-step">Routine complete. Well done!</p>
+            }
+          </div>
+          <div class="routine-actions">
+            <button class="routine-btn" (click)="advanceDay(routine.id)" [disabled]="getProgress(routine) >= 100">Advance day</button>
+          </div>
         </article>
+      } @empty {
+        <div class="empty-routines">
+          <p>No routine yet. The company will send your prescribed routine here.</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="news-section">
+    <div class="section-heading"><div><p class="eyebrow">From Phytofix</p><h2>News & updates</h2></div></div>
+    <div class="news-grid">
+      @for (post of latestNews(); track post.id) {
+        <article class="news-card">
+          <p class="news-tag">{{ post.tag }} · {{ post.date }}</p>
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.excerpt }}</p>
+        </article>
+      } @empty {
+        <p class="empty-state">No news yet. Updates from the company will appear here.</p>
       }
     </div>
   </section>
 </main>
-

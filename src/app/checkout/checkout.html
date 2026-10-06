@@ -1,0 +1,63 @@
+<main class="checkout-page">
+	<section class="checkout-heading">
+		<p class="eyebrow">Checkout</p>
+		<h1>Almost there.</h1>
+	</section>
+
+	@if (placed) {
+		<section class="order-confirm">
+			<span class="confirm-mark">✓</span>
+			<h2>Order placed.</h2>
+			<p class="confirm-id">Order <strong>{{ placed.id }}</strong></p>
+			<p>Thank you for ordering from Phytofix. Your care package is being prepared and is expected to arrive by <strong>{{ placed.eta | date:'mediumDate' }}</strong>. You can follow its progress from your dashboard.</p>
+			<p class="confirm-note">Payment collection via Paystack will be enabled shortly — no charge was made for this order.</p>
+			<a class="primary-link" routerLink="/dashboard">Track your order <span aria-hidden="true">→</span></a>
+		</section>
+	} @else {
+		<div class="checkout-layout">
+			<section class="checkout-form">
+				<p class="eyebrow">Delivery details</p>
+				<h2>Where should we send it?</h2>
+
+				@if (error) {
+					<p class="form-error" role="alert">{{ error }}</p>
+				}
+
+				<form (ngSubmit)="submit()" #checkoutForm="ngForm">
+					<label for="name">Full name</label>
+					<input id="name" name="name" type="text" [(ngModel)]="name" autocomplete="name" required placeholder="Alex Morgan" />
+
+					<label for="email">Email address</label>
+					<input id="email" name="email" type="email" [(ngModel)]="email" autocomplete="email" required placeholder="you@example.com" />
+
+					<label for="phone">Phone number</label>
+					<input id="phone" name="phone" type="tel" [(ngModel)]="phone" autocomplete="tel" required placeholder="+234 800 000 0000" />
+
+					<label for="address">Delivery address</label>
+					<input id="address" name="address" type="text" [(ngModel)]="address" autocomplete="street-address" required placeholder="12 Botanical Road" />
+
+					<label for="city">City</label>
+					<input id="city" name="city" type="text" [(ngModel)]="city" autocomplete="address-level2" required placeholder="Lagos" />
+
+					<button class="primary-button" type="submit" [disabled]="checkoutForm.invalid || cart.count() === 0">Place order <span aria-hidden="true">↗</span></button>
+				</form>
+			</section>
+
+			<aside class="checkout-summary">
+				<p class="eyebrow">Your order</p>
+				@for (item of cart.itemsList(); track item.productId) {
+					<div class="summary-item">
+						<div class="summary-image"><img [src]="item.image" [alt]="item.name" /></div>
+						<div class="summary-info">
+							<strong>{{ item.name }}</strong>
+							<span>Qty {{ item.quantity }} · {{ formatPrice(item.price) }}</span>
+						</div>
+						<strong class="summary-amount">{{ formatPrice(item.price * item.quantity) }}</strong>
+					</div>
+				}
+				<div class="summary-total"><span>Subtotal</span><strong>{{ formatPrice(cart.subtotal()) }}</strong></div>
+				<p class="summary-note">Secure payment with Paystack coming soon. Your order is reserved once placed.</p>
+			</aside>
+		</div>
+	}
+</main>

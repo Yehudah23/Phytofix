@@ -1,0 +1,78 @@
+<main class="admin-page">
+	<section class="admin-heading">
+		<div>
+			<p class="eyebrow">Admin dashboard</p>
+			<h1>Run the operation.</h1>
+			<p class="intro-copy">Orders, delivery progress, and the catalogue in one place.</p>
+		</div>
+	</section>
+
+	<section class="stats-grid" aria-label="Store statistics">
+		<div class="stat-item"><span class="stat-icon leaf-icon">✦</span><div><strong>{{ stats().total }}</strong><span>Total orders</span></div></div>
+		<div class="stat-item"><span class="stat-icon sun-icon">◒</span><div><strong>{{ stats().active }}</strong><span>In progress</span></div></div>
+		<div class="stat-item"><span class="stat-icon check-icon">✓</span><div><strong>{{ stats().delivered }}</strong><span>Delivered</span></div></div>
+		<div class="stat-item"><span class="stat-icon gold-icon">₦</span><div><strong>{{ formatPrice(stats().revenue) }}</strong><span>Revenue</span></div></div>
+	</section>
+
+	<section class="orders-section">
+		<div class="section-heading">
+			<div><p class="eyebrow">Orders</p><h2>All orders</h2></div>
+		</div>
+
+		@if (orders.allViews().length) {
+			<div class="order-list">
+				@for (order of orders.allViews(); track order.id) {
+					<article class="order-row">
+						<div class="order-id">
+							<strong>{{ order.id }}</strong>
+							<span>{{ order.placedAt | date:'medium' }}</span>
+						</div>
+						<div class="order-customer">
+							<strong>{{ order.customerName }}</strong>
+							<span>{{ order.customerEmail }}</span>
+						</div>
+						<div class="order-items">
+							<strong>{{ itemCount(order) }} items</strong>
+							<span>{{ itemNames(order) }}</span>
+						</div>
+						<div class="order-total"><strong>{{ formatPrice(order.total) }}</strong></div>
+						<div class="order-progress">
+							<div class="progress-label"><span [class]="'status status-' + order.status">{{ order.status }}</span><strong>{{ order.progress }}%</strong></div>
+							<div class="progress-track"><span [style.width.%]="order.progress"></span></div>
+							<p class="order-eta">ETA {{ order.eta | date:'mediumDate' }}</p>
+						</div>
+						<button class="advance-button" type="button" (click)="advance(order.id)" [disabled]="order.status === 'delivered'" title="Simulate 24 hours of delivery progress">+24h</button>
+					</article>
+				}
+			</div>
+		} @else {
+			<p class="empty-state">No orders yet. Orders placed by customers will appear here.</p>
+		}
+	</section>
+
+	<section class="catalogue-section">
+		<div class="section-heading"><div><p class="eyebrow">Catalogue</p><h2>Products</h2></div></div>
+		<div class="catalogue-list">
+			@for (product of products; track product.id) {
+				<div class="catalogue-row">
+					<img [src]="product.image" [alt]="product.alt" />
+					<div><strong>{{ product.name }}</strong><span>{{ product.type }}</span></div>
+					<strong class="catalogue-price">{{ formatPrice(product.price) }}</strong>
+				</div>
+			}
+		</div>
+	</section>
+
+	<section class="news-section">
+		<div class="section-heading"><div><p class="eyebrow">Newsroom</p><h2>Latest posts</h2></div><a routerLink="/dashboard" class="view-link">View on dashboard <span aria-hidden="true">→</span></a></div>
+		<div class="news-grid">
+			@for (post of news.allPosts(); track post.id) {
+				<article class="news-card">
+					<p class="news-tag">{{ post.tag }} · {{ post.date }}</p>
+					<h3>{{ post.title }}</h3>
+					<p>{{ post.excerpt }}</p>
+				</article>
+			}
+		</div>
+	</section>
+</main>

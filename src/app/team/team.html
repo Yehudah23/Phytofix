@@ -1,12 +1,27 @@
 <main class="team-page">
-	<section class="team-heading"><p class="eyebrow">The people behind Phytofix</p><h1>Care is a collective practice.</h1><p>We are a small team of growers, formulators, and curious humans building better rituals for the plants in our homes.</p></section>
+  <section class="team-heading">
+    <p class="eyebrow">The people behind Phytofix</p>
+    <h1>Care is a collective practice.</h1>
+    <p>We are a small team of growers, formulators, and curious humans building better rituals for the plants in our homes.</p>
+  </section>
 
-	<section class="team-grid" aria-label="Phytofix team">
-		<article class="team-member member-one"><div class="portrait"><span>AM</span></div><p class="role">Founder · Plant science</p><h2>Amara Mensah</h2><p>Translates years of soil research into products that make sense at home.</p></article>
-		<article class="team-member member-two"><div class="portrait"><span>JL</span></div><p class="role">Formulation · Botanicals</p><h2>Jonah Lee</h2><p>Finds the balance between effective care and a gentle daily ritual.</p></article>
-		<article class="team-member member-three"><div class="portrait"><span>SR</span></div><p class="role">Community · Growing</p><h2>Sol Reyes</h2><p>Helps turn questions, observations, and small wins into shared knowledge.</p></article>
-	</section>
+  <section class="team-grid" aria-label="Phytofix team">
+    @for (member of team.members; track member.name) {
+      <article class="team-member">
+        <div class="portrait"></div>
+        <p class="role">{{ member.role }}</p>
+        <h2>{{ member.name }}</h2>
+        @if (member.bio) {
+          <p>{{ member.bio }}</p>
+        }
+      </article>
+    }
+  </section>
 
-	<section class="team-note"><span class="note-line"></span><p>“The best care is the kind you can keep returning to.”</p><span class="note-credit">— the Phytofix team</span></section>
+  <section class="team-note">
+    <span class="note-line"></span>
+    <p>"The best care is the kind you can keep returning to."</p>
+    <span class="note-credit">— the Phytofix team</span>
+  </section>
 </main>
 
