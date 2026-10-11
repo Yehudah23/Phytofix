@@ -1,70 +1,55 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { Auth, User, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, onAuthStateChanged } from '@angular/fire/auth';
+import { UserCredential } from 'firebase/auth';
 
 export interface UserAccount {
+  uid: string;
   name: string;
   email: string;
-  password: string;
+  photoURL?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  public readonly accountKey = 'phytofix-account';
-  public readonly sessionKey = 'phytofix-session';
-  readonly currentUser = signal<UserAccount | null>(this.readSession());
+  private readonly auth = inject(Auth);
+  private readonly googleProvider = new GoogleAuthProvider();
+  readonly currentUser = signal<UserAccount | null>(null);
 
-  signUp(name: string, email: string, password: string): boolean {
-    const account = { name: name.trim(), email: email.trim().toLowerCase(), password };
-    localStorage.setItem(this.accountKey, JSON.stringify(account));
-    this.setSession(account);
-    return true;
+  constructor() {
+    onAuthStateChanged(this.auth, (user: User | null) => {
+      if (user) {
+        this.currentUser.set({
+          uid: user.uid,
+          name: user.displayName || user.email?.split('@')[0] || 'User',
+          email: user.email || '',
+          photoURL: user.photoURL || undefined,
+        });
+      } else {
+        this.currentUser.set(null);
+      }
+    });
   }
 
-  signIn(email: string, password: string): boolean {
-    const stored = this.readAccount();
-    if (!stored || stored.email !== email.trim().toLowerCase() || stored.password !== password) {
-      return false;
-    }
-
-    this.setSession(stored);
-    return true;
+  async signUp(name: string, email: string, password: string): Promise<UserCredential> {
+    const credential = await createUserWithEmailAndPassword(this.auth, email, password);
+    // Note: In a real app, you'd update the user profile with the name
+    // await updateProfile(credential.user, { displayName: name });
+    return credential;
   }
 
-  signOut(): void {
-    localStorage.removeItem(this.sessionKey);
-    this.currentUser.set(null);
+  async signIn(email: string, password: string): Promise<UserCredential> {
+    return signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  hasAccount(): boolean {
-    return this.readAccount() !== null;
+  async signInWithGoogle(): Promise<UserCredential> {
+    return signInWithPopup(this.auth, this.googleProvider);
   }
 
-  public setSession(account: UserAccount): void {
-    localStorage.setItem(this.sessionKey, JSON.stringify(account));
-    this.currentUser.set(account);
+  async signOut(): Promise<void> {
+    await firebaseSignOut(this.auth);
   }
 
-  public readAccount(): UserAccount | null {
-    return this.readStorage(this.accountKey);
-  }
-
-  public readSession(): UserAccount | null {
-    return this.readStorage(this.sessionKey);
-  }
-
-  public readStorage(key: string): UserAccount | null {
-    if (typeof localStorage === 'undefined') {
-      return null;
-    }
-
-    const value = localStorage.getItem(key);
-    if (!value) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(value) as UserAccount;
-    } catch {
-      return null;
-    }
+  isLoggedIn(): boolean {
+    return this.currentUser() !== null;
   }
 }

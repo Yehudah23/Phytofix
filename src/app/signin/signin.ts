@@ -17,14 +17,31 @@ export class Signin {
   email = '';
   password = '';
   error = '';
+  loading = false;
 
-  submit(): void {
+  async submit(): Promise<void> {
     this.error = '';
-    if (this.auth.signIn(this.email, this.password)) {
+    this.loading = true;
+    try {
+      await this.auth.signIn(this.email, this.password);
       void this.router.navigate(['/dashboard']);
-      return;
+    } catch (err: unknown) {
+      this.error = 'Those details do not match an account. Try again or create a new account.';
+    } finally {
+      this.loading = false;
     }
+  }
 
-    this.error = 'Those details do not match an account. Try again or create a new account.';
+  async signInWithGoogle(): Promise<void> {
+    this.error = '';
+    this.loading = true;
+    try {
+      await this.auth.signInWithGoogle();
+      void this.router.navigate(['/dashboard']);
+    } catch {
+      this.error = 'Failed to sign in with Google. Please try again.';
+    } finally {
+      this.loading = false;
+    }
   }
 }

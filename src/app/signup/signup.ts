@@ -11,22 +11,43 @@ import { CommonModule } from '@angular/common';
   templateUrl: './signup.html',
 })
 export class Signup {
-    public readonly auth = inject(AuthService);
+  public readonly auth = inject(AuthService);
   public readonly router = inject(Router);
 
   name = '';
   email = '';
   password = '';
   error = '';
+  loading = false;
 
-  submit(): void {
+  async submit(): Promise<void> {
     this.error = '';
-    if (this.password.length < 8) {
-      this.error = 'Use at least 8 characters for your password.';
-      return;
-    }
+    this.loading = true;
+    try {
+      if (this.password.length < 8) {
+        this.error = 'Use at least 8 characters for your password.';
+        return;
+      }
 
-    this.auth.signUp(this.name, this.email, this.password);
-    void this.router.navigate(['/dashboard']);
+      await this.auth.signUp(this.name, this.email, this.password);
+      void this.router.navigate(['/dashboard']);
+    } catch (err: unknown) {
+      this.error = 'Failed to create account. Please try again.';
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async signInWithGoogle(): Promise<void> {
+    this.error = '';
+    this.loading = true;
+    try {
+      await this.auth.signInWithGoogle();
+      void this.router.navigate(['/dashboard']);
+    } catch {
+      this.error = 'Failed to sign up with Google. Please try again.';
+    } finally {
+      this.loading = false;
+    }
   }
 }

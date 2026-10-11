@@ -27,6 +27,14 @@ input:focus { border-color: var(--gold-deep); box-shadow: 0 0 0 3px rgba(167, 13
 a { color: var(--gold-deep); font-weight: 700; }
 .form-error { background: #f7e7df; color: #8d4434; border-left: 3px solid #b7674d; padding: 11px 13px; font-size: .8rem; line-height: 1.4; margin-bottom: 18px; }
 
+.divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+.secondary-button { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border: 1px solid var(--line); border-radius: 3px; background: #fffefa; color: var(--ink); padding: 13px 18px; margin-top: 8px; font: 700 .82rem var(--sans); cursor: pointer; transition: background .2s ease, border-color .2s; }
+.secondary-button:hover { background: var(--sage-light); border-color: var(--gold-deep); }
+.secondary-button:disabled { cursor: not-allowed; opacity: .5; }
+.google-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
 @media (max-width: 760px) {
 	.auth-page { grid-template-columns: 1fr; }
 	.auth-brand { min-height: 340px; padding: 28px 8vw; }

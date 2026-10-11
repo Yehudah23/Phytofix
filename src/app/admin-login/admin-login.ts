@@ -19,17 +19,22 @@ export class AdminLogin {
   email = '';
   password = '';
   error = '';
+  loading = false;
 
-  submit(): void {
+  async submit(): Promise<void> {
     this.error = '';
-    if (!this.admin.isAdmin({ name: '', email: this.email, password: '' })) {
-      this.error = 'Admin access only. Use the admin email.';
-      return;
-    }
-    if (this.auth.signIn(this.email, this.password)) {
+    this.loading = true;
+    try {
+      if (!this.admin.isAdmin({ uid: '', name: '', email: this.email, photoURL: '' })) {
+        this.error = 'Admin access only. Use the admin email.';
+        return;
+      }
+      await this.auth.signIn(this.email, this.password);
       void this.router.navigate(['/admin']);
-      return;
+    } catch {
+      this.error = 'Invalid admin credentials. Try again.';
+    } finally {
+      this.loading = false;
     }
-    this.error = 'Invalid admin credentials. Try again.';
   }
 }
