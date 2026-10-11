@@ -8,13 +8,10 @@
 		@for (product of products; track product.id) {
 			<article class="product-card" [class.product-card-featured]="product.featured">
 				<div class="product-image">
-					<span>{{ $index + 1 | number:'0.2-2' }}</span>
 					<img [src]="product.image" [alt]="product.alt" />
 				</div>
 				<div class="product-meta">
-					<p class="product-type">{{ product.type }}</p>
 					<h2>{{ product.name }}</h2>
-					<p>{{ product.description }}</p>
 					<div class="product-buy">
 						<div class="qty-stepper">
 							<button type="button" (click)="changeQuantity(product, -1)" aria-label="Decrease quantity">−</button>
