@@ -1,11 +1,11 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    appId: 'YOUR_APP_ID',
+    apiKey: "AIzaSyA9STuBtfQMTL0dD4x02-fa8pC7znnbusc",
+    authDomain: "royalsandnobles-546e7.firebaseapp.com",
+    projectId: "royalsandnobles-546e7",
+    storageBucket: "royalsandnobles-546e7.firebasestorage.app",
+    messagingSenderId: "754069665291",
+    appId: "1:754069665291:web:7099f4f4e12adf9b91790e",
   },
 };
