@@ -1,14 +1,16 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AdminService } from '../admin.service';
 import { AuthService } from '../auth.service';
 import { OrderService, OrderView } from '../order.service';
 import { NewsService } from '../news.service';
 import { PRODUCTS, formatPrice } from '../catalog';
+import { TeamService } from '../team.service';
 
 @Component({
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   selector: 'app-admin',
   styleUrl: './admin.css',
   templateUrl: './admin.html',
@@ -18,8 +20,16 @@ export class Admin {
   readonly adminService = inject(AdminService);
   readonly orders = inject(OrderService);
   readonly news = inject(NewsService);
+  readonly team = inject(TeamService);
   readonly products = PRODUCTS;
   readonly formatPrice = formatPrice;
+
+  newMember = {
+    name: '',
+    role: '',
+    bio: '',
+    image: '',
+  };
 
   readonly stats = computed(() => {
     const all = this.orders.allViews();
@@ -41,5 +51,18 @@ export class Admin {
 
   advance(id: string): void {
     this.orders.advance(id);
+  }
+
+  addTeamMember(): void {
+    if (!this.newMember.name.trim() || !this.newMember.role.trim() || !this.newMember.image.trim()) {
+      return;
+    }
+    this.team.addMember({
+      name: this.newMember.name.trim(),
+      role: this.newMember.role.trim(),
+      bio: this.newMember.bio.trim() || undefined,
+      image: this.newMember.image.trim(),
+    });
+    this.newMember = { name: '', role: '', bio: '', image: '' };
   }
 }
