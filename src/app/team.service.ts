@@ -1,27 +1,22 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { ApiService } from './api.service';
 
-export interface TeamMember {
-  name: string;
-  role: string;
-  bio?: string;
-  image: string;
-}
+export interface TeamMember { id?: number; name: string; role: string; bio?: string | null; image?: string; }
 
 @Injectable({ providedIn: 'root' })
 export class TeamService {
-  readonly members = signal<TeamMember[]>([
-    { name: 'Dr. Cecilia Oluwamodupe', role: 'Founder/CEO', image: '/dr cecilia mopelola.PNG' },
-    { name: 'Mercy Adelabu', role: 'Production Manager', image: '/mercy adelabu.PNG' },
-    { name: 'Chris Balogun', role: 'Technical Supervisor', image: '/chris balogun.PNG' },
-    { name: 'Clement Raji', role: 'Visual Communication Specialist', image: '/clement raji.PNG' },
-    { name: 'Judah King', role: 'Media Team Head', image: '/judah king.PNG' },
-  ]);
-
-  addMember(member: TeamMember): void {
-    this.members.update((members) => [...members, member]);
+  private readonly api = inject(ApiService);
+  readonly members = signal<TeamMember[]>([]);
+  constructor() { void this.load(); }
+  async load(admin = false): Promise<void> {
+    this.members.set(await this.api.request<TeamMember[]>('GET', admin ? '/admin/team' : '/team'));
   }
-
-  removeMember(name: string): void {
-    this.members.update((members) => members.filter((m) => m.name !== name));
+  async addMember(member: Omit<TeamMember, 'id'>): Promise<void> {
+    const created = await this.api.request<TeamMember>('POST', '/admin/team', member);
+    this.members.update((members) => [...members, created]);
+  }
+  async removeMember(id: number): Promise<void> {
+    await this.api.request('DELETE', `/admin/team/${id}`);
+    this.members.update((members) => members.filter((member) => member.id !== id));
   }
 }

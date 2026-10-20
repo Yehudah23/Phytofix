@@ -53,7 +53,7 @@
 	<section class="catalogue-section">
 		<div class="section-heading"><div><p class="eyebrow">Catalogue</p><h2>Products</h2></div></div>
 		<div class="catalogue-list">
-			@for (product of products; track product.id) {
+			@for (product of productService.products(); track product.id) {
 				<div class="catalogue-row">
 					<img [src]="product.image" [alt]="product.alt" />
 					<div><strong>{{ product.name }}</strong><span>{{ product.type }}</span></div>

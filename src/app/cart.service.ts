@@ -1,85 +1,60 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 
 export interface CartItem {
-	productId: string;
-	name: string;
-	category: string;
-	price: number;
-	image: string;
-	quantity: number;
+  id?: string;
+  productId: string;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+  quantity: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
-	private readonly auth = inject(AuthService);
-	private readonly items = signal<CartItem[]>([]);
+  private readonly api = inject(ApiService);
+  private readonly auth = inject(AuthService);
+  private readonly items = signal<CartItem[]>([]);
+  readonly itemsList = this.items.asReadonly();
+  readonly count = computed(() => this.items().reduce((total, item) => total + item.quantity, 0));
+  readonly subtotal = computed(() => this.items().reduce((total, item) => total + item.price * item.quantity, 0));
 
-	readonly itemsList = this.items.asReadonly();
-	readonly count = computed(() => this.items().reduce((total, item) => total + item.quantity, 0));
-	readonly subtotal = computed(() => this.items().reduce((total, item) => total + item.price * item.quantity, 0));
+  constructor() {
+    effect(() => {
+      if (this.auth.currentUser()) void this.load();
+      else this.items.set([]);
+    });
+  }
 
-	constructor() {
-		effect(() => {
-			const email = this.auth.currentUser()?.email ?? null;
-			this.items.set(email ? this.read(email) : []);
-		});
-	}
+  async load(): Promise<void> {
+    if (!this.auth.currentUser()) return;
+    this.items.set(await this.api.request<CartItem[]>('GET', '/cart'));
+  }
 
-	add(product: Omit<CartItem, 'quantity'>, quantity = 1): void {
-		if (!this.auth.currentUser()) return;
+  async add(product: Omit<CartItem, 'quantity' | 'id'>, quantity = 1): Promise<void> {
+    if (!this.auth.currentUser()) return;
+    await this.api.request('POST', '/cart', { product_id: product.productId, ...product, quantity });
+    await this.load();
+  }
 
-		const items = this.items().slice();
-		const index = items.findIndex((item) => item.productId === product.productId);
-		if (index === -1) {
-			items.push({ ...product, quantity });
-		} else {
-			const existing = items[index];
-			items[index] = { ...existing, quantity: existing.quantity + quantity };
-		}
+  async updateQuantity(productId: string, quantity: number): Promise<void> {
+    const item = this.items().find((candidate) => candidate.productId === productId);
+    if (!item?.id) return;
+    if (quantity <= 0) return this.remove(productId);
+    await this.api.request('PUT', `/cart/${item.id}`, { quantity });
+    await this.load();
+  }
 
-		this.items.set(items);
-		this.persist(items);
-	}
+  async remove(productId: string): Promise<void> {
+    const item = this.items().find((candidate) => candidate.productId === productId);
+    if (item?.id) await this.api.request('DELETE', `/cart/${item.id}`);
+    await this.load();
+  }
 
-	updateQuantity(productId: string, quantity: number): void {
-		if (quantity <= 0) {
-			this.remove(productId);
-			return;
-		}
-
-		const items = this.items().map((item) => (item.productId === productId ? { ...item, quantity } : item));
-		this.items.set(items);
-		this.persist(items);
-	}
-
-	remove(productId: string): void {
-		const items = this.items().filter((item) => item.productId !== productId);
-		this.items.set(items);
-		this.persist(items);
-	}
-
-	clear(): void {
-		this.items.set([]);
-		const email = this.auth.currentUser()?.email;
-		if (email) localStorage.removeItem(this.keyFor(email));
-	}
-
-	private keyFor(email: string): string {
-		return `phytofix-cart-${email}`;
-	}
-
-	private read(email: string): CartItem[] {
-		try {
-			return JSON.parse(localStorage.getItem(this.keyFor(email)) ?? '[]') as CartItem[];
-		} catch {
-			return [];
-		}
-	}
-
-	private persist(items: CartItem[]): void {
-		const email = this.auth.currentUser()?.email;
-		if (!email) return;
-		localStorage.setItem(this.keyFor(email), JSON.stringify(items));
-	}
+  async clear(): Promise<void> {
+    await this.api.request('DELETE', '/cart');
+    this.items.set([]);
+  }
 }

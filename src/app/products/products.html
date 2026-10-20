@@ -5,7 +5,7 @@
 	</section>
 
 	<section class="product-grid" aria-label="Phytofix products">
-		@for (product of products; track product.id) {
+		@for (product of productService.products(); track product.id) {
 			<article class="product-card" [class.product-card-featured]="product.featured">
 				<div class="product-image">
 					<img [src]="product.image" [alt]="product.alt" />

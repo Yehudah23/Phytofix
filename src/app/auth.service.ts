@@ -1,55 +1,62 @@
-import { Injectable, signal, inject } from '@angular/core';
-import { Auth, User, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, onAuthStateChanged } from '@angular/fire/auth';
-import { UserCredential } from 'firebase/auth';
+import { Injectable, inject, signal } from '@angular/core';
+import { ApiService } from './api.service';
 
 export interface UserAccount {
-  uid: string;
   name: string;
   email: string;
-  photoURL?: string;
+  role?: 'admin' | 'user';
+}
+
+interface AuthResponse {
+  user: UserAccount;
+  token: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly auth = inject(Auth);
-  private readonly googleProvider = new GoogleAuthProvider();
-  readonly currentUser = signal<UserAccount | null>(null);
+  private readonly api = inject(ApiService);
+  readonly currentUser = signal<UserAccount | null>(this.readUser());
 
-  constructor() {
-    onAuthStateChanged(this.auth, (user: User | null) => {
-      if (user) {
-        this.currentUser.set({
-          uid: user.uid,
-          name: user.displayName || user.email?.split('@')[0] || 'User',
-          email: user.email || '',
-          photoURL: user.photoURL || undefined,
-        });
-      } else {
-        this.currentUser.set(null);
-      }
-    });
+  async signUp(name: string, email: string, password: string): Promise<void> {
+    const response = await this.api.request<AuthResponse>('POST', '/register', { name, email, password });
+    this.saveSession(response);
   }
 
-  async signUp(name: string, email: string, password: string): Promise<UserCredential> {
-    const credential = await createUserWithEmailAndPassword(this.auth, email, password);
-    // Note: In a real app, you'd update the user profile with the name
-    // await updateProfile(credential.user, { displayName: name });
-    return credential;
+  async signIn(email: string, password: string): Promise<void> {
+    const response = await this.api.request<AuthResponse>('POST', '/login', { email, password });
+    this.saveSession(response);
   }
 
-  async signIn(email: string, password: string): Promise<UserCredential> {
-    return signInWithEmailAndPassword(this.auth, email, password);
-  }
-
-  async signInWithGoogle(): Promise<UserCredential> {
-    return signInWithPopup(this.auth, this.googleProvider);
+  async signInAdmin(email: string, password: string): Promise<void> {
+    const response = await this.api.request<AuthResponse>('POST', '/admin-login', { email, password });
+    this.saveSession(response);
   }
 
   async signOut(): Promise<void> {
-    await firebaseSignOut(this.auth);
+    try {
+      if (localStorage.getItem('phytofix-token')) await this.api.request('POST', '/logout');
+    } finally {
+      localStorage.removeItem('phytofix-token');
+      localStorage.removeItem('phytofix-user');
+      this.currentUser.set(null);
+    }
   }
 
   isLoggedIn(): boolean {
-    return this.currentUser() !== null;
+    return !!localStorage.getItem('phytofix-token') && this.currentUser() !== null;
+  }
+
+  private saveSession(response: AuthResponse): void {
+    localStorage.setItem('phytofix-token', response.token);
+    localStorage.setItem('phytofix-user', JSON.stringify(response.user));
+    this.currentUser.set(response.user);
+  }
+
+  private readUser(): UserAccount | null {
+    try {
+      return JSON.parse(localStorage.getItem('phytofix-user') ?? 'null') as UserAccount | null;
+    } catch {
+      return null;
+    }
   }
 }

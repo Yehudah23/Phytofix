@@ -33,7 +33,7 @@ export class Checkout {
 	error = '';
 	placed: PlacedOrder | null = null;
 
-	submit(): void {
+	async submit(): Promise<void> {
 		this.error = '';
 
 		if (this.cart.count() === 0) {
@@ -46,7 +46,7 @@ export class Checkout {
 			return;
 		}
 
-		const order = this.orders.placeOrder(
+		const order = await this.orders.placeOrder(
 			{
 				name: this.name.trim(),
 				email: this.email.trim().toLowerCase(),
@@ -55,10 +55,9 @@ export class Checkout {
 				city: this.city.trim(),
 			},
 			this.cart.itemsList(),
-			this.cart.subtotal(),
 		);
 
-		this.cart.clear();
+		await this.cart.clear();
 		this.placed = { id: order.id, eta: order.placedAt + 7 * 24 * 60 * 60 * 1000 };
 	}
 }

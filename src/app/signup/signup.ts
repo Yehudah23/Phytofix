@@ -38,16 +38,4 @@ export class Signup {
     }
   }
 
-  async signInWithGoogle(): Promise<void> {
-    this.error = '';
-    this.loading = true;
-    try {
-      await this.auth.signInWithGoogle();
-      void this.router.navigate(['/dashboard']);
-    } catch {
-      this.error = 'Failed to sign up with Google. Please try again.';
-    } finally {
-      this.loading = false;
-    }
-  }
 }

@@ -1,99 +1,49 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 import type { CartItem } from './cart.service';
 
 export type OrderStatus = 'placed' | 'processing' | 'in transit' | 'delivered';
-
 export interface Order {
-	id: string;
-	customerEmail: string;
-	customerName: string;
-	placedAt: number;
-	simulatedHours: number;
-	items: CartItem[];
-	total: number;
-	address: string;
-	city: string;
-	phone: string;
+  id: string; customerEmail: string; customerName: string; placedAt: number;
+  simulatedHours: number; items: CartItem[]; total: number; address: string; city: string; phone: string;
+  status: OrderStatus; progress: number; eta: number;
 }
-
-export interface OrderView extends Order {
-	status: OrderStatus;
-	progress: number;
-	eta: number;
-}
-
-const STORAGE_KEY = 'phytofix-orders';
-const DELIVERY_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+export type OrderView = Order;
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
-	private readonly auth = inject(AuthService);
-	private readonly orders = signal<Order[]>(this.readAll());
+  private readonly api = inject(ApiService);
+  private readonly auth = inject(AuthService);
+  private readonly orders = signal<Order[]>([]);
+  readonly allOrders = this.orders.asReadonly();
+  readonly allViews = this.orders.asReadonly();
+  readonly myViews = computed(() => this.orders().filter((order) => order.customerEmail === this.auth.currentUser()?.email));
 
-	readonly allOrders = this.orders.asReadonly();
+  constructor() {
+    effect(() => {
+      if (this.auth.currentUser()) void this.load();
+      else this.orders.set([]);
+    });
+  }
 
-	readonly allViews = computed(() => this.orders().map((order) => this.toView(order)));
+  async load(admin = false): Promise<void> {
+    this.orders.set(await this.api.request<Order[]>('GET', admin ? '/admin/orders' : '/orders'));
+  }
 
-	readonly myViews = computed(() => {
-		const email = this.auth.currentUser()?.email;
-		if (!email) return [];
-		return this.allViews().filter((order) => order.customerEmail === email);
-	});
+  async placeOrder(details: { name: string; email: string; phone: string; address: string; city: string }, items: CartItem[]): Promise<Order> {
+    const order = await this.api.request<Order>('POST', '/orders', {
+      ...details,
+      items: items.map(({ productId, name, category, price, image, quantity }) => ({
+        product_id: productId, name, category, price, image, quantity,
+      })),
+    });
+    this.orders.update((orders) => [order, ...orders]);
+    return order;
+  }
 
-	placeOrder(
-		details: { name: string; email: string; phone: string; address: string; city: string },
-		items: CartItem[],
-		total: number,
-	): Order {
-		const order: Order = {
-			id: this.nextId(),
-			customerEmail: details.email,
-			customerName: details.name,
-			placedAt: Date.now(),
-			simulatedHours: 0,
-			items: items.map((item) => ({ ...item })),
-			total,
-			address: details.address,
-			city: details.city,
-			phone: details.phone,
-		};
-
-		this.orders.update((list) => [order, ...list]);
-		this.persist();
-		return order;
-	}
-
-	advance(id: string): void {
-		this.orders.update((list) =>
-			list.map((order) => (order.id === id ? { ...order, simulatedHours: order.simulatedHours + 24 } : order)),
-		);
-		this.persist();
-	}
-
-	toView(order: Order): OrderView {
-		const elapsed = Date.now() - order.placedAt + order.simulatedHours * 60 * 60 * 1000;
-		const ratio = Math.min(1, Math.max(0, elapsed / DELIVERY_WINDOW_MS));
-		const progress = Math.round(ratio * 100);
-		const status: OrderStatus =
-			ratio >= 1 ? 'delivered' : ratio >= 0.55 ? 'in transit' : ratio >= 0.15 ? 'processing' : 'placed';
-
-		return { ...order, status, progress, eta: order.placedAt + DELIVERY_WINDOW_MS };
-	}
-
-	private nextId(): string {
-		return `PHYTO-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 900 + 100)}`;
-	}
-
-	private readAll(): Order[] {
-		try {
-			return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]') as Order[];
-		} catch {
-			return [];
-		}
-	}
-
-	private persist(): void {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(this.orders()));
-	}
+  async advance(id: string): Promise<void> {
+    const order = await this.api.request<Order>('POST', `/orders/${id}/advance`);
+    this.orders.update((orders) => orders.map((candidate) => candidate.id === id ? order : candidate));
+  }
 }

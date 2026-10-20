@@ -8,6 +8,6 @@ export class AdminService {
 	private readonly auth = inject(AuthService);
 
 	isAdmin(user: UserAccount | null = this.auth.currentUser()): boolean {
-		return !!user && ADMIN_EMAILS.has(user.email.trim().toLowerCase());
+		return !!user && (user.role === 'admin' || ADMIN_EMAILS.has(user.email.trim().toLowerCase()));
 	}
 }

@@ -6,5 +6,7 @@ export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  return auth.currentUser() ? true : router.createUrlTree(['/signin']);
+  return localStorage.getItem('phytofix-token') && auth.currentUser()
+    ? true
+    : router.createUrlTree(['/signin']);
 };

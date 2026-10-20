@@ -6,7 +6,8 @@ import { AdminService } from '../admin.service';
 import { AuthService } from '../auth.service';
 import { OrderService, OrderView } from '../order.service';
 import { NewsService } from '../news.service';
-import { PRODUCTS, formatPrice } from '../catalog';
+import { formatPrice } from '../catalog';
+import { ProductService } from '../product.service';
 import { TeamService } from '../team.service';
 
 @Component({
@@ -21,7 +22,7 @@ export class Admin {
   readonly orders = inject(OrderService);
   readonly news = inject(NewsService);
   readonly team = inject(TeamService);
-  readonly products = PRODUCTS;
+  readonly productService = inject(ProductService);
   readonly formatPrice = formatPrice;
 
   newMember = {
@@ -49,15 +50,20 @@ export class Admin {
     return order.items.map((i) => i.name).join(', ');
   }
 
-  advance(id: string): void {
-    this.orders.advance(id);
+  constructor() {
+    void this.orders.load(true);
+    void this.team.load(true);
   }
 
-  addTeamMember(): void {
+  async advance(id: string): Promise<void> {
+    await this.orders.advance(id);
+  }
+
+  async addTeamMember(): Promise<void> {
     if (!this.newMember.name.trim() || !this.newMember.role.trim() || !this.newMember.image.trim()) {
       return;
     }
-    this.team.addMember({
+    await this.team.addMember({
       name: this.newMember.name.trim(),
       role: this.newMember.role.trim(),
       bio: this.newMember.bio.trim() || undefined,

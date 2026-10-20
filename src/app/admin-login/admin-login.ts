@@ -25,11 +25,7 @@ export class AdminLogin {
     this.error = '';
     this.loading = true;
     try {
-      if (!this.admin.isAdmin({ uid: '', name: '', email: this.email, photoURL: '' })) {
-        this.error = 'Admin access only. Use the admin email.';
-        return;
-      }
-      await this.auth.signIn(this.email, this.password);
+      await this.auth.signInAdmin(this.email, this.password);
       void this.router.navigate(['/admin']);
     } catch {
       this.error = 'Invalid admin credentials. Try again.';

@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { PRODUCTS, Product } from '../catalog';
+import { Product } from '../catalog';
+import { ProductService } from '../product.service';
 import { AuthService } from '../auth.service';
 import { CartService } from '../cart.service';
 
@@ -12,7 +13,7 @@ import { CartService } from '../cart.service';
   templateUrl: './products.html',
 })
 export class Products {
-  protected readonly products = PRODUCTS;
+  protected readonly productService = inject(ProductService);
   private readonly auth = inject(AuthService);
   private readonly cart = inject(CartService);
   private readonly router = inject(Router);
@@ -29,13 +30,13 @@ export class Products {
     this.quantities = { ...this.quantities, [product.id]: next };
   }
 
-  addToCart(product: Product): void {
+  async addToCart(product: Product): Promise<void> {
     if (!this.auth.currentUser()) {
       void this.router.navigate(['/signin']);
       return;
     }
 
-    this.cart.add(
+    await this.cart.add(
       {
         productId: product.id,
         name: product.name,
