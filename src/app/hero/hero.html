@@ -9,8 +9,24 @@
 				<a class="text-link" routerLink="/about">How we work <span aria-hidden="true">→</span></a>
 			</div>
 		</div>
-		<div class="hero-art" aria-label="Phytofix botanical illustration">
-			<img src="/phytofix.PNG" alt="Phytofix botanical wellness" class="hero-image" />
+		<div class="hero-art" aria-label="Phytofix botanical wellness carousel">
+			<div class="carousel" (mouseenter)="stopAutoAdvance()" (mouseleave)="startAutoAdvance()">
+				<div class="carousel-track" [style.transform]="'translateX(-' + current() * 100 + '%)'">
+					@for (slide of slides; track slide.src) {
+						<div class="carousel-slide">
+							<img [src]="slide.src" [alt]="slide.alt" class="hero-image" />
+							<div class="carousel-caption">{{ slide.caption }}</div>
+						</div>
+					}
+				</div>
+				<button class="carousel-nav prev" type="button" aria-label="Previous slide" (click)="prev()">‹</button>
+				<button class="carousel-nav next" type="button" aria-label="Next slide" (click)="next()">›</button>
+				<div class="carousel-dots">
+					@for (slide of slides; track slide.src; let i = $index) {
+						<button class="carousel-dot" [class.active]="current() === i" type="button" [attr.aria-label]="'Go to slide ' + (i + 1)" (click)="goTo(i)"></button>
+					}
+				</div>
+			</div>
 		</div>
 	</section>
 
@@ -20,4 +36,3 @@
 		<div><span class="proof-number"></span><strong>Progress you can see</strong><p>Small signals, tracked over time.</p></div>
 	</section>
 </main>
-

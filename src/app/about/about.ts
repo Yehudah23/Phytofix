@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NewsService } from '../news.service';
 
 @Component({
   imports: [RouterLink],
@@ -7,4 +8,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './about.css',
   templateUrl: './about.html',
 })
-export class About {}
+export class About {
+  readonly news = inject(NewsService);
+  readonly latestNews = computed(() => this.news.latest()(3));
+}

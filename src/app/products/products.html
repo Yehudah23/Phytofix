@@ -12,6 +12,7 @@
 				</div>
 				<div class="product-meta">
 					<h2>{{ product.name }}</h2>
+					<p class="product-price">{{ formatPrice(product.price) }}</p>
 					<div class="product-buy">
 						<div class="qty-stepper">
 							<button type="button" (click)="changeQuantity(product, -1)" aria-label="Decrease quantity">−</button>
@@ -30,6 +31,18 @@
 			</article>
 		}
 	</section>
+
+	@if (showAuthChoice) {
+		<section class="auth-choice" aria-labelledby="auth-choice-title">
+			<button class="auth-choice-close" type="button" (click)="showAuthChoice = false" aria-label="Close account options">✕</button>
+			<p class="eyebrow">One step away</p>
+			<h2 id="auth-choice-title">Sign in or create an account to add items to your cart.</h2>
+			<div class="auth-choice-actions">
+				<a class="primary-link" routerLink="/signin">Sign in <span aria-hidden="true">↗</span></a>
+				<a class="secondary-link" routerLink="/signup">Create an account <span aria-hidden="true">↗</span></a>
+			</div>
+		</section>
+	}
 
 	<section class="routine-band">
 		<span class="routine-mark">✦</span>

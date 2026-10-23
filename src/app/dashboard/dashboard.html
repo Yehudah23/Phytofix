@@ -100,9 +100,13 @@
     <div class="news-grid">
       @for (post of latestNews(); track post.id) {
         <article class="news-card">
+          @if (post.image) {
+            <img class="news-card-image" [src]="post.image" [alt]="post.title" />
+          }
           <p class="news-tag">{{ post.tag }} · {{ post.date }}</p>
           <h3>{{ post.title }}</h3>
           <p>{{ post.excerpt }}</p>
+          <a class="news-readmore" [routerLink]="['/news', post.id]">Read more <span aria-hidden="true">→</span></a>
         </article>
       } @empty {
         <p class="empty-state">No news yet. Updates from the company will appear here.</p>

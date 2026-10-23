@@ -49,4 +49,23 @@
 		<p>Phytofix Ltd. is committed to building a credible African phytopharmaceutical enterprise with the capacity to serve the Nigerian, African, and global markets, while contributing to research commercialization, local pharmaceutical innovation, job creation, and the development of sustainable value chains for medicinal plants.</p>
 		<a routerLink="/products">Explore our products <span aria-hidden="true">↗</span></a>
 	</section>
+
+	<section class="about-news">
+		<div class="section-heading"><div><p class="eyebrow">From Phytofix</p><h2>News & updates</h2></div></div>
+		<div class="news-grid">
+			@for (post of latestNews(); track post.id) {
+				<article class="news-card">
+					@if (post.image) {
+						<img class="news-card-image" [src]="post.image" [alt]="post.title" />
+					}
+					<p class="news-tag">{{ post.tag }} · {{ post.date }}</p>
+					<h3>{{ post.title }}</h3>
+					<p>{{ post.excerpt }}</p>
+					<a class="news-readmore" [routerLink]="['/news', post.id]">Read more <span aria-hidden="true">→</span></a>
+				</article>
+			} @empty {
+				<p class="empty-state">No news yet. Updates from the company will appear here.</p>
+			}
+		</div>
+	</section>
 </main>

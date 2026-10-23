@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Product } from '../catalog';
+import { RouterLink } from '@angular/router';
+import { formatPrice, Product } from '../catalog';
 import { ProductService } from '../product.service';
 import { AuthService } from '../auth.service';
 import { CartService } from '../cart.service';
 
 @Component({
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   selector: 'app-products',
   styleUrl: './products.css',
   templateUrl: './products.html',
@@ -16,10 +16,11 @@ export class Products {
   protected readonly productService = inject(ProductService);
   private readonly auth = inject(AuthService);
   private readonly cart = inject(CartService);
-  private readonly router = inject(Router);
 
   protected addedId = '';
+  protected showAuthChoice = false;
   protected quantities: Record<string, number> = {};
+  protected readonly formatPrice = formatPrice;
 
   quantityOf(product: Product): number {
     return this.quantities[product.id] ?? 1;
@@ -32,7 +33,7 @@ export class Products {
 
   async addToCart(product: Product): Promise<void> {
     if (!this.auth.currentUser()) {
-      void this.router.navigate(['/signin']);
+      this.showAuthChoice = true;
       return;
     }
 

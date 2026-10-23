@@ -63,4 +63,7 @@ h1 { font-size: clamp(3rem, 6vw, 5.4rem); line-height: .95; margin-bottom: 18px;
 .news-tag { color: var(--gold-deep); font-size: .62rem; font-weight: 700; letter-spacing: .1em; margin: 0 0 12px; text-transform: uppercase; }
 .news-card h3 { color: var(--forest); font: 500 1.25rem var(--display); line-height: 1.25; margin: 0 0 10px; }
 .news-card p { color: var(--muted); font-size: .78rem; line-height: 1.65; margin: 0; }
+.news-card-image { border-radius: 6px; display: block; margin: 0 0 14px; max-width: 100%; height: auto; }
+.news-readmore { color: var(--gold-deep); font-size: .72rem; font-weight: 700; margin-top: 14px; text-decoration: none; }
+.news-readmore:hover { color: var(--forest); }
 @media (max-width: 680px) { .dashboard-page { padding: 25px 6vw 60px; }.dashboard-intro { padding: 60px 0 40px; }.summary-grid { grid-template-columns: 1fr; margin-bottom: 48px; }.summary-item { border-right: 0; border-bottom: 1px solid var(--line); padding: 17px 0; }.product-row { grid-template-columns: 52px 1fr 25px; gap: 13px; }.product-visual { width: 52px; height: 62px; }.progress-wrap { grid-column: 2 / 4; }.order-row { grid-template-columns: 1fr; }.news-grid { grid-template-columns: 1fr; }.profile-card { flex-direction: column; text-align: center; }.sign-out-btn { width: 100%; } }

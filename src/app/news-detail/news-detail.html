@@ -1,0 +1,22 @@
+<main class="news-detail-page">
+  @if (post(); as p) {
+    <a class="back-link" (click)="back()" role="button" tabindex="0" (keydown.enter)="back()">
+      <span aria-hidden="true">←</span> Back to news
+    </a>
+
+    <article class="news-detail-card">
+      <p class="news-tag">{{ p.tag }} · {{ p.date }}</p>
+      <h1>{{ p.title }}</h1>
+      @if (p.image) {
+        <img class="news-detail-image" [src]="p.image" [alt]="p.title" />
+      }
+      <div class="news-detail-body">
+        @for (line of contentLines; track $index) {
+          <p>{{ line }}</p>
+        }
+      </div>
+    </article>
+  } @else {
+    <p class="empty-state">Article not found. <a routerLink="/about">Return to news</a></p>
+  }
+</main>

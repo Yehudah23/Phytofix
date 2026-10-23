@@ -13,6 +13,7 @@ import { Cart } from './cart/cart';
 import { Checkout } from './checkout/checkout';
 import { Admin } from './admin/admin';
 import { AdminLogin } from './admin-login/admin-login';
+import { NewsDetail } from './news-detail/news-detail';
 
 export const routes: Routes = [
 	{ path: '', component: Hero },
@@ -29,4 +30,5 @@ export const routes: Routes = [
 	{ path: 'cart', component: Cart, canActivate: [authGuard] },
 	{ path: 'checkout', component: Checkout, canActivate: [authGuard] },
 	{ path: 'admin', component: Admin, canActivate: [adminGuard] },
+	{ path: 'news/:id', component: NewsDetail },
 ];
