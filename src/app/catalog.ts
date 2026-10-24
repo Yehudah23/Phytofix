@@ -4,8 +4,8 @@ export interface Product {
 	type: string;
 	price: number;
 	image: string;
-	alt: string;
-	description: string;
+	alt: string | null;
+	description: string | null;
 	featured?: boolean;
 }
 

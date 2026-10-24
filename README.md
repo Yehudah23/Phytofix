@@ -12,6 +12,12 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## Laravel API
+
+The development build sends API requests to `http://localhost:8000/api`. Start the Laravel backend on port 8000 and allow the Angular development origin (`http://localhost:4200`) in Laravel CORS settings.
+
+Production builds use the relative `/api` path. Deploy the frontend and backend on the same origin, or configure a reverse proxy to forward `/api` requests to Laravel. After deploying backend schema changes, apply them with `php artisan migrate`.
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

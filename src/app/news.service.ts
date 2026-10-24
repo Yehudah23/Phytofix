@@ -64,20 +64,20 @@ export class NewsService {
   private readonly posts = signal<NewsPost[]>(this.readAll());
   readonly allPosts = this.posts.asReadonly();
   readonly latest = computed(() => (count = 3) => this.posts().slice(0, count));
+  readonly loadError = signal('');
 
   constructor() { void this.load(); }
 
   async load(): Promise<void> {
+    this.loadError.set('');
     try {
       const remote = await this.api.request<NewsPost[]>('GET', '/news');
-      if (remote && remote.length) {
-        this.posts.set(remote);
-        return;
-      }
-    } catch {
-      // Fall back to default posts when the API is unavailable.
+      this.posts.set(remote);
+    } catch (error: unknown) {
+      console.error('Unable to load news from the Laravel API.', error);
+      this.loadError.set('News could not be loaded from the server. Showing saved content.');
+      this.posts.set(this.readAll());
     }
-    this.posts.set(this.readAll());
   }
 
   getPost(id: string): NewsPost | undefined { return this.posts().find((post) => post.id === id); }

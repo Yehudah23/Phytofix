@@ -9,6 +9,7 @@ import { NewsService } from '../news.service';
 import { formatPrice } from '../catalog';
 import { ProductService } from '../product.service';
 import { TeamService } from '../team.service';
+import type { NewsPost } from '../news.service';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -31,6 +32,18 @@ export class Admin {
     bio: '',
     image: '',
   };
+  teamError = '';
+  teamSaving = false;
+  newPost: Omit<NewsPost, 'id' | 'createdAt' | 'createdBy'> = {
+    tag: 'Company',
+    title: '',
+    excerpt: '',
+    date: '',
+    content: '',
+    image: '',
+  };
+  newsError = '';
+  newsSaving = false;
 
   readonly stats = computed(() => {
     const all = this.orders.allViews();
@@ -60,15 +73,51 @@ export class Admin {
   }
 
   async addTeamMember(): Promise<void> {
+    this.teamError = '';
     if (!this.newMember.name.trim() || !this.newMember.role.trim() || !this.newMember.image.trim()) {
+      this.teamError = 'Enter a name, role, and image path before adding a team member.';
       return;
     }
-    await this.team.addMember({
-      name: this.newMember.name.trim(),
-      role: this.newMember.role.trim(),
-      bio: this.newMember.bio.trim() || undefined,
-      image: this.newMember.image.trim(),
-    });
-    this.newMember = { name: '', role: '', bio: '', image: '' };
+    this.teamSaving = true;
+    try {
+      await this.team.addMember({
+        name: this.newMember.name.trim(),
+        role: this.newMember.role.trim(),
+        bio: this.newMember.bio.trim() || undefined,
+        image: this.newMember.image.trim(),
+      });
+      this.newMember = { name: '', role: '', bio: '', image: '' };
+    } catch (error: unknown) {
+      console.error('Unable to add a team member through the Laravel API.', error);
+      this.teamError = 'Team member could not be added. Check your connection and admin access, then try again.';
+    } finally {
+      this.teamSaving = false;
+    }
+  }
+
+  async addNewsPost(): Promise<void> {
+    this.newsError = '';
+    if (!this.newPost.title.trim()) {
+      this.newsError = 'Enter a headline before publishing.';
+      return;
+    }
+
+    this.newsSaving = true;
+    try {
+      await this.news.addPost({
+        ...this.newPost,
+        title: this.newPost.title.trim(),
+        excerpt: this.newPost.excerpt?.trim() || null,
+        date: this.newPost.date?.trim() || null,
+        content: this.newPost.content?.trim() || null,
+        image: this.newPost.image?.trim() || null,
+      });
+      this.newPost = { tag: 'Company', title: '', excerpt: '', date: '', content: '', image: '' };
+    } catch (error: unknown) {
+      console.error('Unable to publish news through the Laravel API.', error);
+      this.newsError = 'News could not be published. Check your connection and admin access, then try again.';
+    } finally {
+      this.newsSaving = false;
+    }
   }
 }

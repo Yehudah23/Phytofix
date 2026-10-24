@@ -1,12 +1,12 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
 
-export interface RoutineStep { day: number; title: string; description: string; instructions?: string; tips?: string; }
+export interface RoutineStep { day: number; title: string; description: string | null; instructions?: string | null; tips?: string | null; }
 export interface PrescribedRoutine {
-  id: string; userEmail: string; userName: string; name: string; description: string;
+  id: string; userEmail: string; userName: string; name: string; description: string | null;
   totalDays: number; currentDay: number; createdBy?: string; steps: RoutineStep[];
 }
-export interface ProductRoutine extends PrescribedRoutine { productId: string; productName: string; productType: string; productImage: string; }
+export interface ProductRoutine extends PrescribedRoutine { productId: string | null; productName: string; productType: string; productImage: string | null; }
 
 @Injectable({ providedIn: 'root' })
 export class RoutineService {

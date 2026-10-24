@@ -9,8 +9,8 @@
 		<form (ngSubmit)="submit()" #signinForm="ngForm">
 			<label for="email">Email address</label><input id="email" name="email" type="email" [(ngModel)]="email" autocomplete="email" required placeholder="you@example.com" />
 			<label for="password">Password</label><input id="password" name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required placeholder="Your password" />
-			<button class="primary-button" type="submit" [disabled]="signinForm.invalid || loading">Sign in <span aria-hidden="true">↗</span></button>
-		</form>
-		<p class="switch-prompt">New to Phytofix? <a routerLink="/signup">Create an account</a></p>
+<button class="primary-button" type="submit" [disabled]="signinForm.invalid || loading">Sign in <span aria-hidden="true">↗</span></button>
+	</form>
+	<p class="switch-prompt">New to Phytofix? <a routerLink="/signup">Create an account</a></p>
 	</div></section>
 </main>

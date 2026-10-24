@@ -68,17 +68,40 @@
 	<div class="team-form">
 		<input type="text" placeholder="Name" [(ngModel)]="newMember.name" />
 		<input type="text" placeholder="Role" [(ngModel)]="newMember.role" />
-		<input type="text" placeholder="Image path (e.g. /photo.PNG)" [(ngModel)]="newMember.image" />
+		<input type="text" placeholder="Image path or URL (e.g. /photo.PNG)" [(ngModel)]="newMember.image" />
 		<input type="text" placeholder="Bio (optional)" [(ngModel)]="newMember.bio" />
-		<button type="button" (click)="addTeamMember()" class="advance-button">Add Member</button>
+		@if (teamError) {
+			<p class="form-error" role="alert">{{ teamError }}</p>
+		}
+		<button type="button" (click)="addTeamMember()" class="advance-button" [disabled]="teamSaving">{{ teamSaving ? 'Saving…' : 'Add Member' }}</button>
 	</div>
 	<div class="team-list">
-		@for (member of team.members(); track member.name) {
+		@for (member of team.adminMembers(); track member.id) {
 			<div class="team-row">
 				<img [src]="member.image" [alt]="member.name" width="50" height="50" />
 				<div><strong>{{ member.name }}</strong><span>{{ member.role }}</span></div>
 			</div>
 		}
 	</div>
+</section>
+
+<section class="news-section">
+	<div class="section-heading"><div><p class="eyebrow">News & updates</p><h2>Publish a news post</h2></div></div>
+	<form class="team-form news-form" (ngSubmit)="addNewsPost()">
+		<select name="tag" [(ngModel)]="newPost.tag" aria-label="News category">
+			<option value="Company">Company</option>
+			<option value="Products">Products</option>
+			<option value="Research">Research</option>
+		</select>
+		<input name="title" type="text" placeholder="Headline" [(ngModel)]="newPost.title" required />
+		<input name="date" type="text" placeholder="Display date (e.g. Oct 24, 2026)" [(ngModel)]="newPost.date" />
+		<input name="image" type="text" placeholder="Image path or URL (e.g. /news-photo.jpg)" [(ngModel)]="newPost.image" />
+		<textarea name="excerpt" placeholder="Short summary" [(ngModel)]="newPost.excerpt"></textarea>
+		<textarea name="content" placeholder="Full article content" [(ngModel)]="newPost.content"></textarea>
+		@if (newsError) {
+			<p class="form-error" role="alert">{{ newsError }}</p>
+		}
+		<button type="submit" class="advance-button" [disabled]="newsSaving">{{ newsSaving ? 'Publishing…' : 'Publish news' }}</button>
+	</form>
 </section>
 </main>

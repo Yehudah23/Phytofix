@@ -2,5 +2,16 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist/Phytofix/browser",
-  "framework": "angular"
+  "framework": "angular",
+  "headers": [
+    {
+      "source": "/team/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
+  ]
 }

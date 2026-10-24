@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 
 export interface TrackedProduct {
   id?: string; userEmail: string; productId: string; productName: string; productType: string;
-  productImage: string; startedAt: number; currentDay: number; totalDays: number; routineId?: string;
+  productImage: string | null; startedAt: number | null; currentDay: number; totalDays: number; routineId: string | null;
 }
 
 @Injectable({ providedIn: 'root' })

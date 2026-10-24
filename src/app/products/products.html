@@ -5,6 +5,9 @@
 	</section>
 
 	<section class="product-grid" aria-label="Phytofix products">
+		@if (productService.error()) {
+			<p class="form-error" role="alert">{{ productService.error() }}</p>
+		}
 		@for (product of productService.products(); track product.id) {
 			<article class="product-card" [class.product-card-featured]="product.featured">
 				<div class="product-image">

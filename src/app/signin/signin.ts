@@ -26,7 +26,7 @@ export class Signin {
       await this.auth.signIn(this.email, this.password);
       void this.router.navigate(['/dashboard']);
     } catch (err: unknown) {
-      this.error = 'Those details do not match an account. Try again or create a new account.';
+      this.error = err instanceof Error ? err.message : 'Those details do not match an account. Try again or create a new account.';
     } finally {
       this.loading = false;
     }
