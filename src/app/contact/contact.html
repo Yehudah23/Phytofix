@@ -13,8 +13,12 @@
       @if (submitted) {
         <div class="success-message">
           <p class="success-icon">✓</p>
-          <h3>Message sent!</h3>
-          <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
+          <h3>{{ emailSent ? 'Message sent!' : 'Message saved!' }}</h3>
+          @if (emailSent) {
+            <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
+          } @else {
+            <p>Your message is saved in our inbox, but the email notification could not be delivered. For urgent help, email info.phytofix@gmail.com directly.</p>
+          }
           <button class="secondary-button" (click)="submitted = false">Send another</button>
         </div>
       } @else {
@@ -45,7 +49,7 @@
             <label for="message">Message</label>
             <textarea id="message" name="message" [(ngModel)]="message" rows="6" required placeholder="Tell us what's on your mind..."></textarea>
           </div>
-          <button class="primary-button" type="submit" [disabled]="contactForm.invalid">Send message <span aria-hidden="true">→</span></button>
+          <button class="primary-button" type="submit" [disabled]="contactForm.invalid || saving">{{ saving ? 'Sending…' : 'Send message' }} <span aria-hidden="true">→</span></button>
         </form>
       }
     </div>
@@ -91,7 +95,7 @@
         </details>
         <details class="faq-item">
           <summary>What payment methods do you accept?</summary>
-          <p>We accept bank transfer, USSD, and card payments at checkout.</p>
+          <p>Checkout creates an order request and opens WhatsApp for manual confirmation. No online payment is taken.</p>
         </details>
         <details class="faq-item">
           <summary>Do you ship outside Akure?</summary>

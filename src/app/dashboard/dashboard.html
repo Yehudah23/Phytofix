@@ -51,6 +51,31 @@
   </section>
 
   <section class="routine-section">
+    <div class="section-heading"><div><p class="eyebrow">Daily care</p><h2>Products you are tracking</h2></div></div>
+    @if (careError) { <p class="form-error" role="alert">{{ careError }}</p> }
+    @if (trackedProducts.myTrackedProducts().length) {
+      <div class="routine-grid">
+        @for (product of trackedProducts.myTrackedProducts(); track product.id) {
+          <article class="routine-card">
+            @if (product.productImage) { <img class="news-card-image" [src]="product.productImage" [alt]="product.productName" /> }
+            <div class="routine-header"><h3>{{ product.productName }}</h3><p class="routine-desc">{{ product.productType }}</p></div>
+            <div class="routine-progress">
+              <div class="progress-label"><span>Day {{ product.currentDay }} of {{ product.totalDays }}</span><strong>{{ (product.currentDay / product.totalDays * 100) | number:'1.0-0' }}%</strong></div>
+              <div class="progress-track"><span [style.width.%]="product.currentDay / product.totalDays * 100"></span></div>
+            </div>
+            <div class="routine-actions">
+              <button class="routine-btn" type="button" (click)="advanceTrackedDay(product)" [disabled]="product.currentDay >= product.totalDays">Advance day</button>
+              <button class="routine-btn" type="button" (click)="removeTrackedProduct(product)">Stop tracking</button>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <p class="empty-routines">No products are being tracked. <a routerLink="/products">Choose a product</a> and select “Track care”.</p>
+    }
+  </section>
+
+  <section class="routine-section">
     <div class="section-heading"><div><p class="eyebrow">Your routine</p><h2>Prescribed by the company</h2></div></div>
     <div class="routine-grid">
       @for (routine of prescribedRoutines(); track routine.id) {

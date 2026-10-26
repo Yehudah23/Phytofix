@@ -9,7 +9,7 @@ import { formatPrice } from '../catalog';
 
 interface PlacedOrder {
 	id: string;
-	eta: number;
+	whatsappUrl: string;
 }
 
 @Component({
@@ -32,6 +32,7 @@ export class Checkout {
 	city = '';
 	error = '';
 	placed: PlacedOrder | null = null;
+	submitting = false;
 
 	async submit(): Promise<void> {
 		this.error = '';
@@ -46,18 +47,48 @@ export class Checkout {
 			return;
 		}
 
-		const order = await this.orders.placeOrder(
-			{
-				name: this.name.trim(),
-				email: this.email.trim().toLowerCase(),
-				phone: this.phone.trim(),
-				address: this.address.trim(),
-				city: this.city.trim(),
-			},
-			this.cart.itemsList(),
-		);
-
-		await this.cart.clear();
-		this.placed = { id: order.id, eta: order.placedAt + 7 * 24 * 60 * 60 * 1000 };
+		this.submitting = true;
+		let order: Awaited<ReturnType<OrderService['placeOrder']>>;
+		try {
+			const items = this.cart.itemsList();
+			order = await this.orders.placeOrder(
+				{
+					name: this.name.trim(),
+					email: this.email.trim().toLowerCase(),
+					phone: this.phone.trim(),
+					address: this.address.trim(),
+					city: this.city.trim(),
+				},
+				items,
+			);
+			const orderLines = order.items.map((item) => `- ${item.name} x${item.quantity}: ${this.formatPrice(item.price * item.quantity)}`);
+			const message = [
+				'Hello Phytofix, I would like to confirm this order.',
+				`Order: ${order.id}`,
+				`Name: ${this.name.trim()}`,
+				`Phone: ${this.phone.trim()}`,
+				`Email: ${this.email.trim()}`,
+				`Delivery address: ${this.address.trim()}, ${this.city.trim()}`,
+				'Items:',
+				...orderLines,
+				`Subtotal: ${this.formatPrice(order.total)}`,
+				'Please confirm availability, delivery cost, and payment instructions.',
+			].join('\n');
+			this.placed = {
+				id: order.id,
+				whatsappUrl: `https://wa.me/2348130283832?text=${encodeURIComponent(message)}`,
+			};
+			try {
+				await this.cart.clear();
+			} catch (error: unknown) {
+				console.error('Order request was saved, but the server cart could not be cleared.', error);
+				this.error = 'Your order request is saved, but your cart could not be cleared. Please remove the items from your cart after confirming.';
+			}
+		} catch (error: unknown) {
+			console.error('Unable to place the order through the Laravel API.', error);
+			this.error = 'Your order request could not be saved. Please check your connection and try again.';
+		} finally {
+			this.submitting = false;
+		}
 	}
 }

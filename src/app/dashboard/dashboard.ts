@@ -6,6 +6,7 @@ import { OrderService, OrderView } from '../order.service';
 import { NewsService } from '../news.service';
 import { RoutineService, PrescribedRoutine, RoutineStep } from '../routine.service';
 import { formatPrice } from '../catalog';
+import { UserProductService, TrackedProduct } from '../user-product.service';
 
 @Component({
   imports: [CommonModule, RouterLink],
@@ -19,6 +20,8 @@ export class Dashboard {
   protected readonly orders = inject(OrderService);
   protected readonly news = inject(NewsService);
   protected readonly routines = inject(RoutineService);
+  protected readonly trackedProducts = inject(UserProductService);
+  careError = '';
   protected readonly formatPrice = formatPrice;
 
   readonly latestNews = computed(() => this.news.latest()(3));
@@ -47,8 +50,36 @@ export class Dashboard {
     return order.items.reduce((sum, item) => sum + item.quantity, 0);
   }
 
-  advanceDay(routineId: string): void {
-    this.routines.advancePrescribedDay(routineId);
+  async advanceDay(routineId: string): Promise<void> {
+    this.careError = '';
+    try {
+      await this.routines.advancePrescribedDay(routineId);
+    } catch (error: unknown) {
+      console.error('Unable to advance the prescribed care day.', error);
+      this.careError = 'Your routine progress could not be updated. Please try again.';
+    }
+  }
+
+  async advanceTrackedDay(product: TrackedProduct): Promise<void> {
+    if (!product.id) return;
+    this.careError = '';
+    try {
+      await this.trackedProducts.advanceDay(product.id);
+    } catch (error: unknown) {
+      console.error('Unable to advance the tracked product care day.', error);
+      this.careError = 'Your care progress could not be updated. Please try again.';
+    }
+  }
+
+  async removeTrackedProduct(product: TrackedProduct): Promise<void> {
+    if (!product.id || !confirm(`Stop tracking ${product.productName}?`)) return;
+    this.careError = '';
+    try {
+      await this.trackedProducts.removeProduct(product.id);
+    } catch (error: unknown) {
+      console.error('Unable to remove a tracked product.', error);
+      this.careError = 'This product could not be removed from your tracker. Please try again.';
+    }
   }
 
   signOut(): void {

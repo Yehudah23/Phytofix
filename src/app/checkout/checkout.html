@@ -6,12 +6,14 @@
 
 	@if (placed) {
 		<section class="order-confirm">
+			@if (error) { <p class="form-error" role="alert">{{ error }}</p> }
 			<span class="confirm-mark">✓</span>
-			<h2>Order placed.</h2>
-			<p class="confirm-id">Order <strong>{{ placed.id }}</strong></p>
-			<p>Thank you for ordering from Phytofix. Your care package is being prepared and is expected to arrive by <strong>{{ placed.eta | date:'mediumDate' }}</strong>. You can follow its progress from your dashboard.</p>
-			<p class="confirm-note">Payment collection via Paystack will be enabled shortly — no charge was made for this order.</p>
-			<a class="primary-link" routerLink="/dashboard">Track your order <span aria-hidden="true">→</span></a>
+			<h2>Order request saved.</h2>
+			<p class="confirm-id">Reference <strong>{{ placed.id }}</strong></p>
+			<p>Your request is saved, but it is not confirmed until the team replies. Continue to WhatsApp to confirm availability, delivery cost, and payment instructions.</p>
+			<p class="confirm-note">No online payment has been taken. Delivery timing and payment are agreed manually with Phytofix.</p>
+			<a class="primary-link" [href]="placed.whatsappUrl" target="_blank" rel="noopener noreferrer">Continue to WhatsApp <span aria-hidden="true">↗</span></a>
+			<a class="primary-link" routerLink="/dashboard">View order request <span aria-hidden="true">→</span></a>
 		</section>
 	} @else {
 		<div class="checkout-layout">
@@ -39,7 +41,7 @@
 					<label for="city">City</label>
 					<input id="city" name="city" type="text" [(ngModel)]="city" autocomplete="address-level2" required placeholder="Lagos" />
 
-					<button class="primary-button" type="submit" [disabled]="checkoutForm.invalid || cart.count() === 0">Place order <span aria-hidden="true">↗</span></button>
+					<button class="primary-button" type="submit" [disabled]="checkoutForm.invalid || cart.count() === 0 || submitting">{{ submitting ? 'Saving request…' : 'Continue to order request' }} <span aria-hidden="true">↗</span></button>
 				</form>
 			</section>
 
@@ -56,7 +58,7 @@
 					</div>
 				}
 				<div class="summary-total"><span>Subtotal</span><strong>{{ formatPrice(cart.subtotal()) }}</strong></div>
-				<p class="summary-note">Secure payment with Paystack coming soon. Your order is reserved once placed.</p>
+				<p class="summary-note">No payment is taken here. This saves an order request and hands off to WhatsApp for confirmation.</p>
 			</aside>
 		</div>
 	}

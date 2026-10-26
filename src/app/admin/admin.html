@@ -50,6 +50,54 @@
 		}
 	</section>
 
+	<section class="orders-section">
+		<div class="section-heading"><div><p class="eyebrow">Customer support</p><h2>Contact inbox</h2></div></div>
+		@if (contactError) { <p class="form-error" role="alert">{{ contactError }}</p> }
+		@if (contactMessages.length) {
+			<div class="order-list">
+				@for (contact of contactMessages; track contact.id) {
+					<article class="order-row">
+						<div><strong>{{ contact.name }}</strong><span>{{ contact.email }}</span></div>
+						<div><strong>{{ contact.subject }}</strong><span>{{ contact.createdAt | date:'medium' }}</span></div>
+						<p>{{ contact.message }}</p>
+						<div class="product-actions">
+							<button class="advance-button" type="button" (click)="markContactRead(contact)" [disabled]="contact.isRead">{{ contact.isRead ? 'Read' : 'Mark read' }}</button>
+							<button class="advance-button delete-button" type="button" (click)="deleteContact(contact)">Delete</button>
+						</div>
+					</article>
+				}
+			</div>
+		} @else if (!contactError) {
+			<p class="empty-state">No customer messages yet.</p>
+		}
+	</section>
+
+	<section class="team-section">
+		<div class="section-heading"><div><p class="eyebrow">Customer care</p><h2>Prescribe a routine</h2></div></div>
+		<form class="team-form" (ngSubmit)="createPrescribedRoutine()">
+			<input name="routineCustomerEmail" type="email" placeholder="Customer email" [(ngModel)]="newRoutine.userEmail" required />
+			<input name="routineCustomerName" type="text" placeholder="Customer name" [(ngModel)]="newRoutine.userName" required />
+			<input name="routineName" type="text" placeholder="Routine name" [(ngModel)]="newRoutine.name" required />
+			<input name="routineDays" type="number" min="1" placeholder="Total days" [(ngModel)]="newRoutine.totalDays" required />
+			<textarea name="routineDescription" placeholder="Routine description" [(ngModel)]="newRoutine.description"></textarea>
+			@for (step of newRoutine.steps; track $index) {
+				<input [name]="'stepDay' + $index" type="number" min="1" [max]="newRoutine.totalDays" placeholder="Step day" [(ngModel)]="step.day" required />
+				<input [name]="'stepTitle' + $index" type="text" placeholder="Step title" [(ngModel)]="step.title" required />
+				<textarea [name]="'stepDescription' + $index" placeholder="Step description" [(ngModel)]="step.description"></textarea>
+				<textarea [name]="'stepInstructions' + $index" placeholder="Instructions" [(ngModel)]="step.instructions"></textarea>
+				<input [name]="'stepTips' + $index" type="text" placeholder="Tips" [(ngModel)]="step.tips" />
+			}
+			@if (routineError) { <p class="form-error" role="alert">{{ routineError }}</p> }
+			<button type="button" class="advance-button" (click)="addRoutineStep()">Add step</button>
+			<button type="submit" class="advance-button" [disabled]="routineSaving">{{ routineSaving ? 'Saving…' : 'Send routine to customer' }}</button>
+		</form>
+		<div class="team-list">
+			@for (routine of routines.adminPrescribed(); track routine.id) {
+				<div class="team-row"><div><strong>{{ routine.name }} · {{ routine.userName }}</strong><span>{{ routine.userEmail }} · day {{ routine.currentDay }}/{{ routine.totalDays }}</span></div></div>
+			}
+		</div>
+	</section>
+
 	<section class="catalogue-section">
 		<div class="section-heading"><div><p class="eyebrow">Catalogue</p><h2>Products</h2></div></div>
 		<div class="catalogue-list">
@@ -58,9 +106,33 @@
 					<img [src]="product.image" [alt]="product.alt" />
 					<div><strong>{{ product.name }}</strong><span>{{ product.type }}</span></div>
 					<strong class="catalogue-price">{{ formatPrice(product.price) }}</strong>
+					<div class="product-actions">
+						<button class="advance-button" type="button" (click)="editProduct(product)">Edit</button>
+						<button class="advance-button delete-button" type="button" (click)="deleteProduct(product)" [disabled]="productSaving">Delete</button>
+					</div>
 				</div>
 			}
 		</div>
+		<form class="team-form product-form" (ngSubmit)="addProduct()">
+			<h3>{{ editingProductId ? 'Edit product' : 'Add a product' }}</h3>
+			<input name="productName" type="text" placeholder="Product name" [(ngModel)]="newProduct.name" required />
+			<input name="productType" type="text" placeholder="Category or product type" [(ngModel)]="newProduct.type" required />
+			<input name="productPrice" type="number" min="0" step="0.01" placeholder="Price (₦)" [(ngModel)]="newProduct.price" required />
+			<input name="productImage" type="text" placeholder="Image path or URL (optional if uploading)" [(ngModel)]="newProduct.image" />
+			<label class="product-upload">Or upload image (JPG, PNG, WebP; max 2 MB)
+				<input name="productImageFile" type="file" accept="image/jpeg,image/png,image/webp" (change)="onProductImageSelected($event)" />
+			</label>
+			<input name="productAlt" type="text" placeholder="Image description (optional)" [(ngModel)]="newProduct.alt" />
+			<textarea name="productDescription" placeholder="Product description (optional)" [(ngModel)]="newProduct.description"></textarea>
+			<label class="featured-option"><input name="productFeatured" type="checkbox" [(ngModel)]="newProduct.featured" /> Feature this product</label>
+			@if (productError) {
+				<p class="form-error" role="alert">{{ productError }}</p>
+			}
+			<div class="product-form-actions">
+				<button type="submit" class="advance-button" [disabled]="productSaving">{{ productSaving ? 'Saving…' : editingProductId ? 'Save changes' : 'Add Product' }}</button>
+				<button *ngIf="editingProductId" class="advance-button" type="button" (click)="cancelProductEdit()" [disabled]="productSaving">Cancel</button>
+			</div>
+		</form>
 	</section>
 
 	<section class="team-section">

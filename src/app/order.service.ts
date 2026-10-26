@@ -22,7 +22,7 @@ export class OrderService {
 
   constructor() {
     effect(() => {
-      if (this.auth.currentUser()) void this.load();
+      if (this.auth.currentUser()?.role !== 'admin' && this.auth.currentUser()) void this.load();
       else this.orders.set([]);
     });
   }

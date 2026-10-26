@@ -39,6 +39,7 @@ h1 { font-size: clamp(3rem, 6vw, 5.4rem); line-height: .95; margin-bottom: 18px;
 .status-placed { color: var(--gold-deep); }.status-processing { color: #8b6737; }.status-in-transit { color: var(--forest-soft); }.status-delivered { color: #557751; }
 .empty-state { border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: .88rem; padding: 40px; text-align: center; }
 .empty-state a { color: var(--gold-deep); font-weight: 700; }
+.form-error { color: #a12f24; font-size: .8rem; }
 .routine-section { margin-top: 68px; }
 .routine-grid { display: grid; gap: 24px; grid-template-columns: repeat(2, 1fr); }
 .routine-card { background: #f1fbea; border-radius: 8px; padding: 24px 22px; display: grid; gap: 18px; }

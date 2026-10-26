@@ -15,7 +15,7 @@ export class UserProductService {
   readonly myTrackedProducts = computed(() => this.trackedProducts());
   constructor() {
     effect(() => {
-      if (this.auth.currentUser()) void this.load();
+      if (this.auth.currentUser() && this.auth.currentUser()?.role !== 'admin') void this.load();
       else this.trackedProducts.set([]);
     });
   }
