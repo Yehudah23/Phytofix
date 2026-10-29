@@ -17,7 +17,7 @@ Contact submissions are stored in the admin inbox. To also deliver email notific
 
 Checkout saves an order request and links to WhatsApp at the company's contact number for manual confirmation. No online payment is taken, and the order is not confirmed until the team responds. Payment, delivery cost, and timing are agreed through WhatsApp.
 
-Production builds use the relative `/api` path, but this project is currently set up for local development, not deployment.
+Production builds use the relative `/api` path. Vercel rewrites `/api` requests to `https://phytofix-backend.onrender.com/api`, so the browser makes same-origin requests and does not need the backend to allow the Vercel domain through CORS. Local development uses `http://localhost:8000/api` directly.
 
 ## Build and tests
 

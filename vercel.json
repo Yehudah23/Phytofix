@@ -3,6 +3,16 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist/Phytofix/browser",
   "framework": "angular",
+  "rewrites": [
+    {
+      "source": "/api",
+      "destination": "https://phytofix-backend.onrender.com/api"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://phytofix-backend.onrender.com/api/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/team/(.*)",
