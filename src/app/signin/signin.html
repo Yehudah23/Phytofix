@@ -11,6 +11,11 @@
 			<label for="password">Password</label><input id="password" name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required placeholder="Your password" />
 <button class="primary-button" type="submit" [disabled]="signinForm.invalid || loading">Sign in <span aria-hidden="true">↗</span></button>
 	</form>
+	<div class="divider">or continue with</div>
+	<button class="secondary-button" type="button" (click)="signInWithGoogle()" [disabled]="loading">
+		<img class="google-icon" src="/google.svg" alt="" aria-hidden="true" />
+		Continue with Google
+	</button>
 	<p class="switch-prompt">New to Phytofix? <a routerLink="/signup">Create an account</a></p>
 	</div></section>
 </main>

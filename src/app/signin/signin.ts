@@ -32,4 +32,17 @@ export class Signin {
     }
   }
 
+  async signInWithGoogle(): Promise<void> {
+    this.error = '';
+    this.loading = true;
+    try {
+      await this.auth.signInWithGoogle();
+      void this.router.navigate(['/dashboard']);
+    } catch (err: unknown) {
+      this.error = err instanceof Error ? err.message : 'Google sign-in failed. Please try again.';
+    } finally {
+      this.loading = false;
+    }
+  }
+
 }

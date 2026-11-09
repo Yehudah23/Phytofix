@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiService } from './api.service';
+import { environment } from '../environments/environment';
 
 export interface UserAccount {
   name: string;
@@ -17,8 +18,23 @@ export class AuthService {
   private readonly api = inject(ApiService);
   readonly currentUser = signal<UserAccount | null>(this.readUser());
 
+  get googleSignInConfigured(): boolean {
+    const { apiKey, authDomain, projectId, appId } = environment.firebase;
+    return Boolean(apiKey && authDomain && projectId && appId);
+  }
+
   async signUp(name: string, email: string, password: string): Promise<void> {
     const response = await this.api.request<AuthResponse>('POST', '/register', { name, email, password });
+    this.saveSession(response);
+  }
+
+  async signInWithGoogle(): Promise<void> {
+    if (!this.googleSignInConfigured) {
+      throw new Error('Google sign-in is not configured. Add the Firebase web app settings to the frontend.');
+    }
+
+    const { authenticateWithGoogle } = await import('./firebase-google-auth');
+    const response = await authenticateWithGoogle(this.api, environment.firebase);
     this.saveSession(response);
   }
 

@@ -13,6 +13,11 @@
       <label for="password">Create a password</label><input id="password" name="password" type="password" [(ngModel)]="password" autocomplete="new-password" required minlength="8" placeholder="8 characters minimum" />
       <button class="primary-button" type="submit" [disabled]="signupForm.invalid || loading">Create account <span aria-hidden="true">↗</span></button>
     </form>
+    <div class="divider">or continue with</div>
+    <button class="secondary-button" type="button" (click)="signInWithGoogle()" [disabled]="loading">
+      <img class="google-icon" src="/google.svg" alt="" aria-hidden="true" />
+      Continue with Google
+    </button>
     <p class="switch-prompt">Already have an account? <a routerLink="/signin">Sign in</a></p>
   </div></section>
 </main>
