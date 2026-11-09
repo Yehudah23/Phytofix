@@ -8,9 +8,9 @@ export interface CarouselSlide {
 }
 
 const SLIDES: CarouselSlide[] = [
-  { src: '/fix-it.PNG', alt: 'Fix-It plant care product', caption: 'Fix-It' },
-  { src: '/product 2.PNG', alt: 'Glucofix product', caption: 'Glucofix' },
-  { src: '/product 3.PNG', alt: 'PhytoGold Tea', caption: 'PhytoGold Tea' },
+  { src: '/fix-it.webp', alt: 'Fix-It plant care product', caption: 'Fix-It' },
+  { src: '/product 2.webp', alt: 'Glucofix product', caption: 'Glucofix' },
+  { src: '/product 3.webp', alt: 'PhytoGold Tea', caption: 'PhytoGold Tea' },
 ];
 
 const INTERVAL_MS = 4500;

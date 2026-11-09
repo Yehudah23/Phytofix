@@ -12,9 +12,9 @@
 		<div class="hero-art" aria-label="Phytofix botanical wellness carousel">
 			<div class="carousel" (mouseenter)="stopAutoAdvance()" (mouseleave)="startAutoAdvance()">
 				<div class="carousel-track" [style.transform]="'translateX(-' + current() * 100 + '%)'">
-					@for (slide of slides; track slide.src) {
+					@for (slide of slides; track slide.src; let i = $index) {
 						<div class="carousel-slide">
-							<img [src]="slide.src" [alt]="slide.alt" class="hero-image" />
+							<img [attr.src]="i === current() ? slide.src : null" [alt]="slide.alt" class="hero-image" [loading]="i === 0 ? 'eager' : 'lazy'" [attr.fetchpriority]="i === 0 ? 'high' : 'auto'" decoding="async" />
 							<div class="carousel-caption">{{ slide.caption }}</div>
 						</div>
 					}
